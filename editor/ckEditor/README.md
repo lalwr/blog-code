@@ -20,7 +20,7 @@
 <mvc:resources mapping="/resources/**" location="/resources/" />
 ```
 
-4. 기본 에디터 셋팅
+4. ##### 기본 에디터 셋팅
 
 ```html
 <!DOCTYPE html>
@@ -95,3 +95,48 @@ String filePath = defaultPath + "resources" + File.separator + "ckEditorImg" + F
    - fileName : 표시할 파일이름
    - url : 이미지가 들어가 있는 경로
    - 문서 : https://ckeditor.com/docs/ckeditor4/latest/guide/dev_file_upload.html#response-file-uploaded-successfully
+
+# 3. 드래그 이미지 업로드
+
+1. ##### add-on 설치
+
+   upload image 애드온은 '드래그앤드롭'을 가능하게 해주고, 나머지는 종속되는 프로그램
+
+   - [Upload image](http://ckeditor.com/addon/uploadimage)
+   - [Upload widget](http://ckeditor.com/addon/uploadwidget)
+   - [Notification aggregator](http://ckeditor.com/addon/notificationaggregator)
+   - [file tools](http://ckeditor.com/addon/filetools)
+   - [notification](http://ckeditor.com/addon/notification)
+
+   프로그램을 다운받아서 `ckeditor/plugins`  디렉토리에 넣는다
+
+2. ##### ckEditor config 설정을 변경
+
+```java
+<script src="/resources/components/ckeditor/ckeditor.js"></script>
+<script>
+    var editorConfig = {
+         filebrowserUploadUrl : "/ckEditor/imgUpload?type=image", //이미지만 업로드
+         extraPlugins : 'uploadimage'
+    };
+ 
+ 
+    CKEDITOR.on('dialogDefinition', function( ev ){
+        var dialogName = ev.data.name;
+        var dialogDefinition = ev.data.definition;
+ 
+        switch (dialogName) {
+            case 'image': //Image Properties dialog
+            //dialogDefinition.removeContents('info');
+            dialogDefinition.removeContents('Link');
+            dialogDefinition.removeContents('advanced');
+            break;
+        }
+    });
+ 
+    window.onload = function(){
+         ck = CKEDITOR.replace("editor", editorConfig);
+    };
+</script>
+```
+
