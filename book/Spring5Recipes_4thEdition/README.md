@@ -63,7 +63,7 @@ public class ShopConfiguration {
 
 # 3장 스프링 MVC
 
-# 유저 로케일 해석하기
+## 유저 로케일 해석하기
 
 - 스프링 MVC 애플리케이션에서 유저 로케일은 `LocaleResolver`  인터페이스를 구현한 로케일 리졸버가 식별
 - 로케일을 해석하는 기준에 따라 여러 `LocaleResolver`  구현체가 스프링 MVC에 준비
@@ -163,6 +163,146 @@ URL의 language 매개변수를 이용해 유저 로케일을 바꿀 수 있다
 
 - http://localhost:8080/court/welcome?language=en_US
 - http://localhost:8080/court/welcome?language=de
+
+## 이름으로 뷰 해석하기
+
+- 핸들러가 요청 처리를 마치고 논리 뷰 이름을 반환하면 DispatcherServlet은 화면에서 테이터를 표시하도록 뷰 템플릿에 제어권을 넘긴다
+
+- 스프링 MVC에서 뷰는 웹 애플리케이션 컨텍스트에 하나 이상 선언된 뷰  리졸버 빈을 해석
+- 뷰 리졸버 빈은 DispatcherServlet이 자동 감지할 수 있도록 ViewResolver 인터페이스를 구현
+- 스프링 MVC에는 다양한 전략에 맞게 뷰를 해석할 수 있는 ViewResolver 구현체가 몇 가지 있다
+
+### 템플릿명과 위치에 따라 뷰 해석하기
+
+```java
+@Bean
+public InternalResourceViewResolver viewResolver() {
+    InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+    viewResolver.setPrefix("/WEB-INF/jsp/");
+    viewResolver.setSuffix(".jsp");
+    return viewResolver;
+}
+```
+
+- `InternalResourceViewResolver`는 클래스패스에 JSTL 라이브러리가 있으면 기본적으로 JstlView형 뷰 객체로 해석하기 때문에 JSTL 태그가 포함된 JSP 템플릿 형태의 뷰는 View를 생략해도 된다
+- `InternalResourceViewResolver`는 RequestDispatcher가 포워딩할 수 있는 내부적인 리소스 뷰(내부 JSP 파일 또는 서블릿)만 해석할 수 있다
+
+### XML 구성 파일에 따라 뷰 해석하기
+
+`XmlViewResolver`는 기본적으로 /WEB-INF/views.xml 파일에서 뷰 빈을 읽는다
+
+```java
+@Configuration
+public class ViewResolverConfiguration implements WebMvcConfigurer, ResourceLoaderAware {
+    private ResourceLoader resourceLoader;
+    
+    @Bean
+    public ViewResolver viewResolver() {
+        XmlViewResolver viewResolver = new XmlViewResolver();
+        viewResolver.setLocation(resourceLoader.getResource("/WEB-INF/court-views.nl"));
+        return viewResolver;
+    }
+    
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+   		this.resourceLoader=resourceLoader;
+    }
+}
+```
+
+- ResourceLoaderAware 인터페이스의 구현 클래스는 location 프로퍼티가 Resource형 인수를 받으므로 리소스를 로드해야 한다
+- XML 구성 파일에서는 스프링이 String을 Resource로 자동 변환하지만 자바로 구성하면 몇가지 작업이 더 필요하다. 
+
+court-view.xml 구성 파일에 클래스명과 프로퍼티를 설정하여 각 뷰를 일반 스프링 빈으로 선언
+
+```jsp
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean id="welcome"
+    class="org.springframework.web.servlet.view.JstlView">
+    <property name="url" value="/WEB-INF/jsp/welcome.jsp" />
+    </bean>
+    
+    <bean id="reservationQuery"
+    class="org.springframework.web.servlet.view.JstlView">
+    <property name="url" value="/WEB-INF/jsp/reservationQuery.jsp" />
+    </bean>
+    
+    <bean id="welcomeRedirect"
+    class="org.springframework.web.servlet.view.RedirectView">
+    <property name="url" value="welcome" />
+    </bean>
+    
+</beans>
+```
+
+### 리소스 번들에 따라 뷰 해석하기
+
+- ResourceBundleViewResolver는 클래스패스 루트에 있는 리소스 번들에서 뷰 빈을 읽는다
+- 리소스 번들의 장점을 활용해 로케일별로 리소스 번들을 따로따로 로드할 수 있다
+
+```java
+@Bean
+public ResourceBundleViewResolver viewResolver() {
+    ResourceBundleViewResolver viewResolver = new ResourceBundleViewResolver();
+    viewResolver.setBasename("court-views");
+    return viewResolver;
+}
+```
+
+ResourceBundleViewResolver의 베이스 이름을 court-view라고 지정하면 리소스 번들은 court-views.properties 파일이 된다
+
+```properties
+welcome.(class)=org.springframework.web.servlet.view.JstlView
+welcome.url=/WEB-INF/jsp/welcome.jsp
+reservationQuery.(class)=org.springframework.web.servlet.view.JstlView
+reservationQuery.url=/WEB-INF/jsp/reservationQuery.jsp
+welcomeRedirect.(class)=org.springframework.web.servlet.view.RedirectView
+welcomeRedirect.url=welcome
+```
+
+### 여러 리졸버를 이용해 뷰 해석하기
+
+웹 애플리케이션 뷰가 여러 개면 한 가지 뷰 해석 전략만으로는 역부족하다
+
+내부 JSP 또는 InternalResourceViewResolver가 해석한다 해도 ResourceBundleViewResolver로 해석해야 할 뷰도 있을수 있다
+
+```java
+@Bean
+public ResourceBundleViewResolver viewResolver() {
+    ResourceBundleViewResolver viewResolver = new ResourceBundleViewResolver();
+    viewResolver.setOrder(0);
+    viewResolver.setBasename("court-views");
+    return viewResolver;
+}
+
+@Bean
+public InternalResourceViewResolver internalResourceViewResolver() {
+    InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+    viewResolver.setOrder(1);
+    viewResolver.setPrefix("/WEB-INF/jsp/");
+    viewResolver.setSuffix(".jsp");
+    return viewResolver;
+}
+```
+
+- 둘 이상의 전략이 등장할 때에는 적용 순서가 중요하다
+- 뷰 리졸버 빈의 order 프로퍼티값으로 우선순위를 지정한다(낮을수록 우선순위가 높다)
+- 뷰의 존재 여부와 상관없이 `InternalResourceViewResolver`는 항상 뷰를 해석하므로 우선순위를 가장 낮게 할당해야 한다
+
+이제 InternalResourceViewResolver로 해석할 수 없는 뷰만 court-vies.properties 리소스 번들 파일에 기재하면 된다
+
+```properties
+welcomeRedirect.(class)=org.springframework.web.servlet.view.RedirectView
+welcomeRedirect.url=welcome
+```
+
+### 리다이렉트 접두어 붙이기
+
+InternalResourceViewResolver가 웹 애플리케이션 컨텍스트에 구성되어 있을 경우 뷰 이름이 `redirect:` 접두어를 붙이면 리다이렉트 뷰로 해석할 수 있다.
 
 # 4장 스프링 REST
 
