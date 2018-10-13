@@ -337,5 +337,10 @@ InternalResourceViewResolver가 웹 애플리케이션 컨텍스트에 구성되
 
 > public 이외의 접근자를 붙이면 가져올 수가 없기 떄문에 에러는 나지 않지만 조용히 무시된다. 실무 프로젝트에서 개발자들이 흔히 저지르는 실수 중 하나이므로 주의해야 한다.
 
+### 트랜잭션 격리 속성
 
+- **오렴된 값 읽기(Dirty read)**
+- **재현 불가한 읽기(Nonrepeatable read)**
+- **허상 읽기(Phantom read)**
+- **소실된 수정(Lost updates)**
 
