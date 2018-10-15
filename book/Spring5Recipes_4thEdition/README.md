@@ -335,8 +335,12 @@ InternalResourceViewResolver가 웹 애플리케이션 컨텍스트에 구성되
 
 메서드에 `@Transactional`만 붙이면 트랜잭션이 걸린 메서드로 선언된다. 주의할 점은, 스프링 AOP가 프록시 기반으로 움직이는 한계 때문에 public 메서드에만 이런 방법이 통한다.
 
-> public 이외의 접근자를 붙이면 가져올 수가 없기 떄문에 에러는 나지 않지만 조용히 무시된다. 실무 프로젝트에서 개발자들이 흔히 저지르는 실수 중 하나이므로 주의해야 한다.
+> ##### public 이외의 접근자를 붙이면 가져올 수가 없기 떄문에 에러는 나지 않지만 조용히 무시된다. 실무 프로젝트에서 개발자들이 흔히 저지르는 실수 중 하나이므로 주의해야 한다.
+# 11장 스프링 배치
 
+스프링 배치는 잡 단위로(JobInstances, JobExecution, StepExecution 컴포넌트를 포함한) 모든 정보와 메타데이터를 총괄한 `JobRepository`를 중심으로 작동하며 각 잡은 하나 이상의 순차적인 스텝으로 구성된다.
+
+잡은 보통 실행 시점에 `JobParameter`와 엮어 Job 자신의 런타임 로직을 매개변수화한다. 그리고 잡 실행을 식별하기 위해 `JobInstance`를 생성한다. 같은 JobInstance(즉, 같은 Job + JobParameter 세트)가 실행되는 것을 `JobExecution`이라고 부른다. JobExecution은 잡 버전에 대한 런타임 컨텍스트로, 이상적 으로는 `JobInstance`당 하나의 `JobExecution`(제일 처음 JobInstance가 실행될 때 만들어진 JobExcution)이 존재한다. 그러나 도중 에러가 나면 `JobInstance`는 다시 시작해야 하고 그러다 보면 `JobExecution`이 하나더 만들어 진다. 초기 잡에 속한 각 스텝의 `JobExecution`에는 `StepExecution`가 있다.
 ### 트랜잭션 격리 속성
 
 - **오염된 값 읽기(Dirty read)** : T2가 수정 후 커밋하지 않은 필드를 T1이 읽는 상황에서 나중에 T2가 롤백되면 T1이 읽는 필드는 일시적인 값으로 더 이상 유효하지 않는다.
