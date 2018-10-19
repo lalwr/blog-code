@@ -16,3 +16,7 @@
 ### class Loader
 
 RunTime 시점에 클래스를 로딩시키며 클래스의 인스턴스를 생성하면 Class Loader를 통해 메모리에 로드한다.
+
+### Runtime Data Areas
+
+JVM이 프로그램을 수행하기 위해 OS로 부터 별도로 할당 받은 메모리 공간을 말하며, Runtime Data Areas는 크게 5가지 영역으로 나눌 수 있다.
