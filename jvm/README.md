@@ -24,3 +24,8 @@ JVM이 프로그램을 수행하기 위해 OS로 부터 별도로 할당 받은 
 ### Execution Engine
 
 Load된 Class의 ByteCode를 실행하는 Runtime Module이다. Class Loader를 통해 JVM 내의 Runtime Data Areas 에 배치된 바이트 코드는 Executin Engine에 의해 실행되며, 실행 엔진은 자바 바이트 코드를 명령어 단위로 읽어서 실행한다.
+
+### Garbage Collector
+
+JVM은 Garbage Collector를 통해 메모리 관리 기능을 자동으로 수행한다. 애플리케이션이 생성한 객체의 생존 여부를 판단하여 더 이상 사용되지 않는 객체를 해제하는 방식으로 메모리를 자동 관리한다.
+
