@@ -11,7 +11,7 @@
   - 기본 자룧령을 명확하게 정의하여 플랫폼 독립성 보장
   - 네트워크 바이트 오더
 
-## JVM 구조
+# JVM 구조
 
 ### class Loader
 
@@ -29,3 +29,6 @@ Load된 Class의 ByteCode를 실행하는 Runtime Module이다. Class Loader를 
 
 JVM은 Garbage Collector를 통해 메모리 관리 기능을 자동으로 수행한다. 애플리케이션이 생성한 객체의 생존 여부를 판단하여 더 이상 사용되지 않는 객체를 해제하는 방식으로 메모리를 자동 관리한다.
 
+# Runtime Data Areas
+
+- **Method (Static) Area**: JVM이 읽어들인 클래스와 인터페이스 대한 런타임 상수 풀, 멤버 변수(필드), 클래스 변수(Static 변수), 생성자와 메소드를 저장하는 공간
