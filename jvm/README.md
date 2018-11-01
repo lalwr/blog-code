@@ -76,3 +76,7 @@ JVM은 Garbage Collector를 통해 메모리 관리 기능을 자동으로 수�
   - 프로그램 실행은 CPU에서 인스트럭션(Instruction)을 수행
   - CPU는 인스트럭션을 수행하는 동안 필요한 정보를 CPU 내 기억장치인 레지스터에 저장
   - 연산 결곽값을 메모리에 전달하기 전 저장하는 CPU 내의 기억장치
+- **Native Method Stack Area**
+  - 자바 외 언어로 작성된 네이티브 코드를 위한 Stack
+  - 즉, JNI(Java Native Interface)를 통해 호출되는 C/C++ 등의 코드를 수행하기 위한 스택
+  - 네이티브 메소드의 매개변수, 지역변수 등을 바이트 코드로 저장
