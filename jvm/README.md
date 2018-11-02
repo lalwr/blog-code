@@ -1,4 +1,4 @@
-# JVM(Java Virtual Machine)
+JVM(Java Virtual Machine)
 
 - Java로 개발한 프로그램을 컴파일하여 만들어지는 바이트코드를 실행시키기 위한 가상머신
 - javac 컴파일러를 통해 바이트코드로 변한되며, JRE에 있는 classloader를 통해 JVM으로 적재되고 JIT 컴파일 방식으로 실행
@@ -11,7 +11,7 @@
   - 기본 자룧령을 명확하게 정의하여 플랫폼 독립성 보장
   - 네트워크 바이트 오더
 
-# JVM 구조
+## JVM 구조
 
 ### class Loader
 
@@ -29,16 +29,14 @@ Load된 Class의 ByteCode를 실행하는 Runtime Module이다. Class Loader를 
 
 JVM은 Garbage Collector를 통해 메모리 관리 기능을 자동으로 수행한다. 애플리케이션이 생성한 객체의 생존 여부를 판단하여 더 이상 사용되지 않는 객체를 해제하는 방식으로 메모리를 자동 관리한다.
 
-# Runtime Data Areas
+## Runtime Data Areas
 
 - **Method (Static) Area**: JVM이 읽어들인 클래스와 인터페이스 대한 런타임 상수 풀, 멤버 변수(필드), 클래스 변수(Static 변수), 생성자와 메소드를 저장하는 공간
-
 - **Runtime Constant Pool**
   - 메소드 영역에 포함되지만 독자적 중요성이 있다.
   - 클래스 파일 constant_pool 테이블에 해당하는 영역
   - 클래스와 인터페이스 상수, 메소드와 필드에 대한 모든 레퍼런스를 저장
   - JVM은 런타임 상수 풀을 통해 해당 메소드나 필드의 실제 메모리 상 주소를 찾아 참조
-
 - **메소드 영역/런타임 상수 풀의 사용기간 및 스레드 공유 범위**
 
   - JVM 시작시 생성
@@ -46,7 +44,6 @@ JVM은 Garbage Collector를 통해 메모리 관리 기능을 자동으로 수�
   - 명시적으로 null 선언 시
   - 구성 방식이나 GC 방법은 JVM 벤더마다 다를 수 있다.
   - 모든 스레드에서 공유
-
 - **Heap Area**
 
   - JVM이 관리하는 프로그램 상에서 데이터를 저장하기 위해 런타임 시 동적으로 할당하여 사용하는 영역
@@ -80,3 +77,9 @@ JVM은 Garbage Collector를 통해 메모리 관리 기능을 자동으로 수�
   - 자바 외 언어로 작성된 네이티브 코드를 위한 Stack
   - 즉, JNI(Java Native Interface)를 통해 호출되는 C/C++ 등의 코드를 수행하기 위한 스택
   - 네이티브 메소드의 매개변수, 지역변수 등을 바이트 코드로 저장
+
+## Heap Area
+
+- **Young Generation**: 이 영역은 자바 객체가 생성되자마자 저장되고, 생긴지 얼마 안되는 객체가 저장되는 공간이다. 시간이 지나 우선순위가 낮아지면 Old 영역으로 옮겨진다. 이 영역에서 객체가 사라질 때 Minor GC가 발생
+- **Old(Tenured) Generation**: Young Generation 영역에서 저장되었던 객체 중에 오래된 객체가 이동되어 저장되는 영역이다. 이 영역에서 객체가 사라질 때 Major GC(Full GC)가 발생
+- **Permanent Generation**: 클래스 로더에 의해 로든되는 클래스, 메소드 등에 대한 메타 정보가 저장되는 영역으로 JVM에 의해 사용된다. 리플렉션을 사용하여 동적으로 클래스가 로딩되는 경우에 사용된다. 내부적으로 리플렉션 기능을 자주 사용하는 Spring Framework를 이용할 경우 이 영역에 대한 고려가 필요
