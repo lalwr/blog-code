@@ -81,5 +81,13 @@ JVM은 Garbage Collector를 통해 메모리 관리 기능을 자동으로 수�
 ## Heap Area
 
 - **Young Generation**: 이 영역은 자바 객체가 생성되자마자 저장되고, 생긴지 얼마 안되는 객체가 저장되는 공간이다. 시간이 지나 우선순위가 낮아지면 Old 영역으로 옮겨진다. 이 영역에서 객체가 사라질 때 Minor GC가 발생
+
 - **Old(Tenured) Generation**: Young Generation 영역에서 저장되었던 객체 중에 오래된 객체가 이동되어 저장되는 영역이다. 이 영역에서 객체가 사라질 때 Major GC(Full GC)가 발생
+
 - **Permanent Generation**: 클래스 로더에 의해 로든되는 클래스, 메소드 등에 대한 메타 정보가 저장되는 영역으로 JVM에 의해 사용된다. 리플렉션을 사용하여 동적으로 클래스가 로딩되는 경우에 사용된다. 내부적으로 리플렉션 기능을 자주 사용하는 Spring Framework를 이용할 경우 이 영역에 대한 고려가 필요
+
+  - **New/Young 영역**
+
+    \- **Eden** : 객체들이 최초로 생성되는 공간
+
+    \- **Survivor 0 / 1** : Eden에서 참조되는 객체들이 저장되는 공간
