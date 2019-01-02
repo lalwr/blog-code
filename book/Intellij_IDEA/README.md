@@ -34,27 +34,13 @@
 
 `Command + Shift + F(Ctrl + Shift + F)`
 
-##### 프로젝트 내 찾기
+##### 프로젝트 내 변경
 
 `Command + Shift + R(Ctrl + Shift + R)`
 
 
 
 ### 3.1 HTML 파일 생성과 미리 보기
-
-#### 파일 생성과 편집
-
-##### 프로젝트 툴 윈도우로 포커스 이동
-
-`Command + 1(Alt + 1)`
-
-##### 신규 파일 생성 팝업 실행
-
-`Command + N(Alt + N)`
-
-##### 파일 기본 요소 자동 생성 커스트마이징
-
-`Command + ,(Ctrl + Alt + S)`
 
 #### LiveEdit로 미리 보기
 
@@ -65,6 +51,49 @@ Body를 편집하기 전에 HTML 미리 보기
 `Ctrl + Shift + D` (윈도우에서는 파일 이름을 오른쪽 클릭하고 `Debug 'index.html'`)를 누르면 브라우저가 시작된다.
 
 현재 열린 파일을 디버그 모드로 실행되며 HTML파일을 열었다면 브라우저로 미리 보기를 보여주고 자바스크립트 디버그 상태이다. 파일을 편집하면 실시간으로 렌더링 결과를 확인할 수 있다.
+
+##### 프로젝트 툴 윈도우 활성화/비활성화(Project)
+
+`Command + 1(Alt + 1)`
+
+##### 신규 파일 생성(New..) 
+
+`Command + N(Alt + Insert)`
+
+##### 설정 화면 표시(Settings..)
+
+`Command + ,(Ctrl + Alt + S)`
+
+##### 열린 HTML 파일을 브라우저로 미리 보기(Debug context configuration)
+
+`Ctrl + Shift + D(파일 이름을 오른쪽 클릭하고 Debug 선택)`
+
+
+
+### 3.2 편집과 자동 완성 기능
+
+#### 완료 태그의 자동 완성 기능
+
+HTML 시작 태그에 대응하는 종료 태그를 자동으로 입력력된다.
+
+#### 자동 완성 후보
+
+`div`태그를 입력하면 `>`를 입력하기 전에 커서를 이동해 스페이스를 입력하면 지정할 수 있는 속성 후보가 자동으로 나타난다. 자동 완성 후보를 `Tab`으로 확정하면 뒤에 이어지는 스테이트먼트를 교체하는 형태로 자동 완성 되지만 `Enter`로 확정하면 이어지는 스테이트먼트를 그대로 두고 자동 완성 내용이 커서 위치에 삽입된다.
+
+#### Emmnet/Zen Coding
+
+젯브레인 IDE는 Emmet(https://emmet.io/)을 표준으로 지원하고 있어 별도 플러그인 설치 없이 Emmet 표기법을 작성하소 `Tab`을 누르는 것만으로 해당 기능을 사용할 수 있다.
+
+|                  생략 표기법                  |                      전개 후                      |
+| :-------------------------------------------: | :-----------------------------------------------: |
+|                     hello                     |           \<div class="hello"\>\</div\>           |
+|              hello{Hello World}               |      <div class="hello"\>Hello World\</div\>      |
+|                       a                       |                \<a href="">\</a\>                 |
+|                a{Hello World}                 |           \<a href="">Hello World\</a\>           |
+| a\[href=http://jetbrains.com\]\[Hello World\] | \<a href="http://jetbrains.com">Hello World\</a\> |
+|                  script:src                   |            \<script src="">\</script>             |
+|             script[src=hello.js]              |        \<script src="hello.js">\</script>         |
+|                   form:post                   |      \<form action="" method="post">\</form>      |
 
 
 
