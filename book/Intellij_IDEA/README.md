@@ -97,5 +97,16 @@ HTML 시작 태그에 대응하는 종료 태그를 자동으로 입력력된다
 
 
 
+## ETC
 
+##### 빠른 평가 표현식
 
+`Option + Space(Ctrl + Shift + I)`
+
+##### 편집기에서 데이터 흐름 정보 미리보기
+
+`Control + Shift + P(Ctrl + Shift + P)`
+
+##### 조인 라인 액션
+
+`Control + Shift + J(Ctrl + Shift + J)`
