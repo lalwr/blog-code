@@ -97,5 +97,12 @@ HTML 시작 태그에 대응하는 종료 태그를 자동으로 입력력된다
 
 
 
+#### Intention Action
+
+정의되지 않은 곳에서 커서를 맞추고 `Option + Enter(Alt + Enter)`를 누르면 Intention Action(상황이나 조건에 맞게 액션을 수행하는) 팝업이 나타난다.
 
 
+
+#### Emmet
+
+`script:src` 라고 입력하고 `Tab`을 누르면 `<script src=""\>`로 변환된다. 파일 이름을 입력하고 `Option + Enter(Alt + Enter)`를 누르고 **'Create File 파일이름'** 라는 Intention Action을 선택하면 IDE가 파일을 생성한다.
