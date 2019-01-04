@@ -106,3 +106,36 @@ HTML 시작 태그에 대응하는 종료 태그를 자동으로 입력력된다
 #### Emmet
 
 `script:src` 라고 입력하고 `Tab`을 누르면 `<script src=""\>`로 변환된다. 파일 이름을 입력하고 `Option + Enter(Alt + Enter)`를 누르고 **'Create File 파일이름'** 라는 Intention Action을 선택하면 IDE가 파일을 생성한다.
+
+
+
+#### Postfix completion(포스트픽스 자동 완성)
+
+문법 검증 기능을 사용해 우선 생각나는 대로 계산식을 작성하고 **이 계산식을 사용한 if 문을 만들어야지** 같이 문장으로 변환하는 경우 Postfix completion문법을 사용하여 작성 할수 있다.
+`arg1>arg2.if` 작성 후 `Tab`을 입력하면 `if (arg1 > arg2) { }`가 작성된다. 
+다른 Postfix completion은 Preferences 다이얼로그의 **Editor -> General -> Postfix completion**에서 확인할 수 있다.
+
+##### 자바 스크립트의 주요 Postfix completion
+
+| postfix  |            사용 방법            |
+| :------: | :-----------------------------: |
+| 수식.log |     식을 console.log로 출력     |
+| 수식.var |        식을 변수에 대입         |
+| 수식.if  | 식을 조건문으로 한 if 문을 구성 |
+| 수식.not |        식의 조건을 반전         |
+
+
+
+## ETC
+
+##### 빠른 평가 표현식
+
+`Option + Space(Ctrl + Shift + I)`
+
+##### 편집기에서 데이터 흐름 정보 미리보기
+
+`Control + Shift + P(Ctrl + Shift + P)`
+
+##### 조인 라인 액션
+
+`Control + Shift + J(Ctrl + Shift + J)`
