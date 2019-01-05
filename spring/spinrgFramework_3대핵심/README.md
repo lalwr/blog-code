@@ -6,7 +6,7 @@
 
 ### IoC(Inversion of Control)
 
-IoC는 의존성 주입 (DI)이라고도합니다. 객체 인스턴스에 설정된 특성을 통해서만 객체가 종속성을 정의하는 프로세스입니다. 그런 다음 컨테이너는 Bean을 작성할 때 이러한 종송석을 주입합니다. 이 프로세스는 근본적으로 클래스의 직접적인 생성이나 서비스로 케이터 패턴과 같은 메커니즘을 사용하여 종속성의 인스턴스 또는 위치를 제어하는 빈 자체의 역(반전 제어의 이름)입니다.
+IoC는 의존성 주입 (DI)이라고도합니다. 객체 인스턴스에 설정된 특성을 통해서만 객체가 종속성을 정의하는 프로세스입니다. 그런 다음 컨테이너는 Bean을 작성할 때 이러한 종속성을 주입합니다. 이 프로세스는 근본적으로 클래스의 직접적인 생성이나 서비스 로케이터 패턴과 같은 메커니즘을 사용하여 종속성의 인스턴스 또는 위치를 제어하는 빈 자체의 역(반전 제어의 이름)입니다.
 
 `org.springframework.beans`및 `org.springframework.context`패키지는 Spring 프레임 워크의 IoC 컨테이너의 기초입니다.[`BeanFactory`](https://docs.spring.io/spring-framework/docs/5.1.3.RELEASE/javadoc-api/org/springframework/beans/factory/BeanFactory.html) 인터페이스는 모든 유형의 개체를 관리 할 수있는 고급 구성 메커니즘을 제공합니다. [`ApplicationContext`](https://docs.spring.io/spring-framework/docs/5.1.3.RELEASE/javadoc-api/org/springframework/context/ApplicationContext.html) 의 하위 인터페이스입니다 `BeanFactory`는 아래의 항목을 추가합니다.
 
@@ -237,10 +237,6 @@ Spring 2.0에서는 모든 advice 매개 변수가 정적으로 타입 화되어
 Spring AOP는 순수 자바로 구현된다. 특별한 컴파일 과정이 필요 없습니다. Spring AOP는 클래스 로더 계층을 제어 할 필요가 없으므로 서블릿 컨테이너 또는 애플리케이션 서버에서 사용하기에 적합합니다.
 
 Spring AOP는 현재 메소드 실행 join point 만 지원한다 (Spring 빈에서 메소드의 실행을 조언). 필드 차단은 구현되지 않았지만 필드 차단에 대한 지원은 핵심 Spring AOP API를 손상시키지 않고 추가 될 수 있습니다. 필드 액세스를 조언하고 조인 포인트를 업데이트해야하는 경우 AspectJ와 같은 언어를 고려해야한다.
-
-AOP에 대한 Spring AOP의 접근 방식은 다른 대부분의 AOP 프레임 워크와 다르다. 목표는 가장 완벽한 AOP 구현을 제공하는 것이 아닙니다 (Spring AOP는 상당히 유능한 편이지만). 오히려 AOP 구현과 Spring IoC 간의 긴밀한 통합을 제공하여 엔터프라이즈 애플리케이션의 일반적인 문제를 해결하는 것을 목표로합니다.
-
-따라서, 예를 들어 Spring Framework의 AOP 기능은 일반적으로 Spring IoC 컨테이너와 함께 사용된다. 측면은 일반적인 bean 정의 구문을 사용하여 구성됩니다 (강력한 "자동 프록시"기능이 가능함). 이것은 다른 AOP 구현과의 중요한 차이입니다. 매우 정교한 객체 (일반적으로 도메인 객체)에 대한 조언과 같이 Spring AOP를 사용하여 쉽고 효율적으로 작업 할 수는 없습니다. 이런 경우에는 AspectJ가 최선의 선택이다. 그러나 Spring AOP는 AOP가 적용될 수있는 엔터프라이즈 Java 애플리케이션의 대부분의 문제에 대해 우수한 솔루션을 제공한다는 것이 우리의 경험입니다.
 
 
 
