@@ -189,3 +189,6 @@ Preferences 아이얼로그의 Editor -> Code Style에서 조정할 수 있다. 
 
 `(Ctrl + Alt + U)`
 
+##### 라이브 템플릿 목록
+
+`(Ctrl + J)`
