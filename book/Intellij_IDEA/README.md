@@ -95,19 +95,13 @@ HTML 시작 태그에 대응하는 종료 태그를 자동으로 입력력된다
 |             script[src=hello.js]              |        \<script src="hello.js">\</script>         |
 |                   form:post                   |      \<form action="" method="post">\</form>      |
 
-
-
 #### Intention Action
 
 정의되지 않은 곳에서 커서를 맞추고 `Option + Enter(Alt + Enter)`를 누르면 Intention Action(상황이나 조건에 맞게 액션을 수행하는) 팝업이 나타난다.
 
-
-
 #### Emmet
 
 `script:src` 라고 입력하고 `Tab`을 누르면 `<script src=""\>`로 변환된다. 파일 이름을 입력하고 `Option + Enter(Alt + Enter)`를 누르고 **'Create File 파일이름'** 라는 Intention Action을 선택하면 IDE가 파일을 생성한다.
-
-
 
 #### Postfix completion(포스트픽스 자동 완성)
 
@@ -123,6 +117,27 @@ HTML 시작 태그에 대응하는 종료 태그를 자동으로 입력력된다
 | 수식.var |        식을 변수에 대입         |
 | 수식.if  | 식을 조건문으로 한 if 문을 구성 |
 | 수식.not |        식의 조건을 반전         |
+
+### Expand Selection
+
+구문제 맞게 선택 범위를 넓힐 수 있는 기능으로 `Option + ↑(Ctrl + W)` 을 사용하여 시작과 종료 위치를 문맥에 따라 선택해준다. 선택 범위가 너무 커져버리면 `Option + ↓(Ctrl + Shift + W)`로 선택 범위를 축소할 수 있다(Shrink Selection).
+
+### 변수 추출
+
+`Option Command + V(Ctrl + + Alt + V)`로 변수를 추출할 수 있다.
+
+### 인라인
+
+변수를 추출하는 것과 반대로 변수를 제거해 인라인으로 리펙토링할 수 있다. 제거하려는 변수에 커서를 두고 `Option Command + N(Ctrl + + Alt + N)`을 누른다.
+
+### 코드 포맷
+
+평집 과정에서 스페이스나 들여쓰기가 많이 맞지 않을 경우  `Option + Command + L(Ctrl + Alt + L)`을 누르면 정리해준다.
+Preferences 아이얼로그의 Editor -> Code Style에서 조정할 수 있다. 'Scheme'란에 'Project'를 지정하면 다른 프로젝트에 영향을 미치지 않는 설정이 가능하다.
+
+### 리네임 리팩토링
+
+`Command + Shift + R(Ctrl + Shift + R)`을 통해 안전하게 이름을 변경할 수 있다.
 
 
 
