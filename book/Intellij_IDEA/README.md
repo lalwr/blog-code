@@ -141,6 +141,36 @@ Preferences 아이얼로그의 Editor -> Code Style에서 조정할 수 있다. 
 
 
 
+## 4장 실행과 디버깅
+
+##### 프로젝트 툴 윈도우로 포커스 이동
+
+`Command + 1(Ctrl + 1)`
+
+
+
+### Inspection
+
+스크롤바에서 노란색 강조는 파일의 정적 분석 결과를 나타내며, 프로그램에 문법적으로 틀리지는 않지만 수정하는 게 바람직한 코드가 있다고 경고하는 표현이다. `Command + F1(Ctrl + F1)`으로 경고 내용을 확인할 수 있다.
+불필요한 경고 메시지는 `Option + Enter(Alt + Enter)`을 사용해 경고 메시지를 해제하자.
+
+
+
+### Live Template 활용
+
+- `psvm`을 입력하고 `Tab`을 누르면 main 메소드가 생성된다.
+- `fori`을 입력하고 `Tab`을 누르면 for문이 생성된다.
+- `"".var`을 입력하고 `Tab`을 누르면 문자열을 저장히기 위한 변수를 선언한다.
+- `수식.if`을 입력하고 `Tab`을 누르면 if조건문이 생성된다.
+- `수식.not을 입력하고 `Tab`을 누르면 if조건문이 반전되어 생성된다.
+- `sout`을 입력하고 `Tab`을 누르면 출력하는 문장이 생성된다.
+
+##### 자동 완성 세미콜론
+
+`Command + Shift + Enter(Ctrl + Shift + Enter)`
+
+
+
 ## ETC
 
 ##### 빠른 평가 표현식
@@ -154,4 +184,8 @@ Preferences 아이얼로그의 Editor -> Code Style에서 조정할 수 있다. 
 ##### 조인 라인 액션
 
 `Control + Shift + J(Ctrl + Shift + J)`
+
+##### 다이어그램 팝업
+
+`(Ctrl + Alt + U)`
 
