@@ -187,7 +187,17 @@ Preferences 아이얼로그의 Editor -> Code Style에서 조정할 수 있다. 
 
 `F2`
 
+##### **리팩토링 메소드 추출**
 
+`Ctrl + T(Shift + Ctrl + Alt + T)`
+
+##### 브레이크 포인트 설정
+
+`Command + F8(Ctrl + F8)`
+
+##### 디버깅 실행
+
+`Ctrl + Shift+ D`
 
 
 
