@@ -12,6 +12,28 @@
 
 마찬가지로 service 클래스를 작성하고 있다면, 메소드 호출의 그 부분만을 포함하고 다른것은 아무것도 포함하지 않아야 합니다. 모듈 관련 유틸리티 전역 함수조차 없어야 합니다. 액세스 할 수 있는 다른 클래스 파일에서 분리합니다
 
+```java
+public class Person
+{
+    private Long personId;
+    private String firstName;
+    private String lastName;
+    private String age;
+    private List<Account> accounts;
+}
+```
+
+```java
+public class Account
+{
+    private Long guid;
+    private String accountNumber;
+    private String accountName;
+    private String status;
+    private String type;
+}
+```
+
 
 
 ## OCP(Open/closed principle)
