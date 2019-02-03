@@ -50,19 +50,187 @@ public class Account
 
 모듈의 소스 코드나 바이너리 코드를 수정하지 않아도 모듈의 기능을 확장하거나 변경할 수 있다. 그 모듈의 실행 가능한 바이너리 형태나 링크 가능한 라이브러리를 건드릴 필요가 없다.
 
+인터페이스를 이용하여 디자인을 확장할 수 있다.
+
+```java
+public interface Play {
+    public void doPlay();
+}
+```
+
+```java
+public class Person() {
+    private Play play;
+    
+    public Person(Play play) {
+        this.play = play;
+    }
+    public void playing() {
+        this.play.doPlay();
+    }
+}
+```
+
+```java
+public class Soccer implements Play {
+    public void doPlay() {
+        System.out.println(“play soccer”);
+    } 
+}
+public class Tennis implements Play {
+    public void doPlay() {
+        System.out.println(“play tennis”);
+    } 
+}
+```
+
+```java
+public class DemoPlay() {
+    public static void main(String[] args) {
+        Person person = new Person(new Soccer()); 
+        person.playing();  
+        Person = new Person(new Tennis());  
+        person.playing();  
+    }
+}
+```
+
 
 
 ## LSP(Liskov substitution principle)
 
 **리스코프 치환 원칙(LSP, Liskov substitution principle)**이란 자료형 S가 자료형 T의 하위형이라면, 프로그램에서 자료형 T의 객체는 프로그램의 속성을 변경하지 않고 자료형 S의 객체로 교체할 수 있어야 함을 뜻한다. 
 
+하위 클래스의 객체가 부모 클래스의 객체와 동일한 방식으로 작동해야합니다.
 
+```java
+class Rectangle {
+    private int width;
+    private int height;
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getWidth() {
+        return this.width;
+    }
+
+    public int area() {
+        return this.width * this.height;
+    }
+}
+```
+
+```java
+class Square extends Rectangle {
+    @Override
+    public void setWidth(int width) {
+        this.width = width;
+        this.height = width;
+    }
+
+    @Override
+    public void setHeight(int height) {
+        this.width = height;
+        this.height = height;
+    }
+}
+```
+
+```java
+class Test
+{
+	public static void main (String args[])
+	{
+		Rectangle r = new Square();
+        
+		r.setWidth(3);
+		r.setHeight(5);
+
+		System.out.println(r.getArea());
+		// 15가 아닌 25가 출력된다.
+	}
+}
+```
+
+이 원칙은 열기 닫기 원칙의 확장 일 뿐이며 새로운 파생 클래스가 동작을 변경하지 않고 기본 클래스를 확장하는지 확인해야한다.
 
 ## ISP(Interface segregation principle)
 
 **인터페이스 분리 원칙(ISP, Interface segregation principle)**은 클라이언트가 자신이 이용하지 않는 메서드에 의존하지 않아야 한다는 원칙이다. 인터페이스 분리 원칙은 큰 덩어리의 인터페이스들을 구체적이고 작은 단위들로 분리시킴으로써 클라이언트들이 꼭 필요한 메서드들만 이용할 수 있게 한다. 이와 같은 작은 단위들을 *역할 인터페이스*라고도 부른다.인터페이스 분리 원칙을 통해 시스템의 내부 의존성을 약화시켜 리팩토링, 수정, 재배포를 쉽게 할 수 있다.
 
+```java
+public interface ComputerMotionListener
+{
+    public void mouseDragged();
+ 
+    public void mouseMoved(); 
+    
+    public void keboardInput();
+}
+```
 
+```java
+public class MouseMotionListenerImpl implements ComputerMotionListener
+{
+    @Override
+    public void mouseDragged() {
+        System.out.println("mouse drag");
+    }
+ 
+    @Override
+    public void mouseMoved() {
+        System.out.println("mouse drag" );
+    }
+    
+    @Override
+    public void keboardInput() {
+        
+    }
+}
+```
+
+마우스에 대한 기능을 구현 하기위해서 사용하지 않는 메소드도 구현 하게 된다. 인터페이스를 분리하자.
+
+```java
+public interface MouseMotionListener
+{
+    public void mouseDragged();
+ 
+    public void mouseMoved(); 
+}
+```
+
+```java
+public interface KeyboardMotionListener
+{   
+    public void keboardInput();
+}
+```
+
+```java
+public class MouseMotionListenerImpl implements MouseMotionListener
+{
+    @Override
+    public void mouseDragged() {
+        System.out.println("mouse drag");
+    }
+ 
+    @Override
+    public void mouseMoved() {
+        System.out.println("mouse drag" );
+    }
+}
+```
 
 ## DIP(Dependency inversion principle)
 
