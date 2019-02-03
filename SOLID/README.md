@@ -168,6 +168,8 @@ class Test
 
 **인터페이스 분리 원칙(ISP, Interface segregation principle)**은 클라이언트가 자신이 이용하지 않는 메서드에 의존하지 않아야 한다는 원칙이다. 인터페이스 분리 원칙은 큰 덩어리의 인터페이스들을 구체적이고 작은 단위들로 분리시킴으로써 클라이언트들이 꼭 필요한 메서드들만 이용할 수 있게 한다. 이와 같은 작은 단위들을 *역할 인터페이스*라고도 부른다.인터페이스 분리 원칙을 통해 시스템의 내부 의존성을 약화시켜 리팩토링, 수정, 재배포를 쉽게 할 수 있다.
 
+마우스에 대한 기능을 구현 하기위해서 사용하지 않는 메소드도 구현 하게 된다.
+
 ```java
 public interface ComputerMotionListener
 {
@@ -199,7 +201,7 @@ public class MouseMotionListenerImpl implements ComputerMotionListener
 }
 ```
 
-마우스에 대한 기능을 구현 하기위해서 사용하지 않는 메소드도 구현 하게 된다. 인터페이스를 분리하자.
+인터페이스를 분리하자.
 
 ```java
 public interface MouseMotionListener
@@ -238,6 +240,86 @@ public class MouseMotionListenerImpl implements MouseMotionListener
 
 첫째, 상위 모듈은 하위 모듈에 의존해서는 안된다. 상위 모듈과 하위 모듈 모두 추상화에 의존해야 한다.
 둘째, 추상화는 세부 사항에 의존해서는 안된다. 세부사항이 추상화에 의존해야 한다.
+
+상위 Develop 모듈이 하위 모듈에 의존적이다.
+
+```java
+public class JavaDeveloper
+{   
+    public void develop(){
+    	System.out.println("java develop");
+    };
+}
+```
+
+```java
+public class JavScriptDeveloper
+{   
+    public void develop(){
+    	System.out.println("javaScript develop");
+    };
+}
+```
+
+```java
+public class Project
+{
+    private JavaDeveloper javaDeveloper = new JavaDeveloper();
+    private JavScriptDeveloper javScriptDeveloper = new JavScriptDeveloper();
+    
+    public void projectDevelop() {
+        javaDeveloper.develop();
+        javScriptDeveloper.develop();
+    }
+}
+```
+
+추상화에 의존하게 수정하자. OCP도 준수하게 된다.
+
+```java
+public interface Developer {
+    void projectDevelop();
+}
+```
+
+```java
+public class JavaDeveloper implements Developer
+{   
+    @Override
+    public void develop(){
+    	System.out.println("java develop");
+    };
+}
+```
+
+
+
+
+
+```java
+public class JavScriptDeveloper implements Developer
+{   
+    @Override
+    public void develop(){
+    	System.out.println("javaScript develop");
+    };
+}
+```
+
+```java
+public class Project {
+    
+    private List<Developer> developers;
+    
+    public Project(List<Developer> developers) {
+        this.developers = developers;
+    }
+    
+    public void projectDevelop() {
+        developers.forEach(d -> d.develop());
+    }
+}
+```
 
 
 
