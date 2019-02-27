@@ -64,39 +64,57 @@ try(FileOutputStream fos2 = new FileOutputStream("file.txt")){
 
 #### Numeric literals with underscores
 
+Java7부터 Underscores를 지원한다. `_`는 숫자 사이에만 올 수 있다.
+
 ```java
 // Java 7이전
-int thousand =  1_000;
+int money =  1_000;
 
 // Java 7이후
-int million  =  1_000_000;
+int money  =  1_000_000;
 ```
-
-
 
 #### Improved exception handling
 
+Multi-catch 기능을 사용할 수 있다.
 
+```java
+// Java 7이전
+try {
+    File file = new File("test.txt");
+    FileInputStream fis = new FileInputStream(file);
+    BufferedReader bReader = new BufferedReader(new InputStreamReader(fis));
+    String str = bReader.readLine();
+    SimpleDateFormat format = new SimpleDateFormat("DD/MM/YY");
+    Date date = format.parse(str);
+} catch (ParseException exception) {
+    
+} catch (IOException exception) {
+    
+}
 
-### New file system API (NIO 2.0)
+// Java 7이후	
+try {
+    File file = new File("test.txt");
+    FileInputStream fis = new FileInputStream(file);
+    BufferedReader bReader = new BufferedReader(new InputStreamReader(fis));
+    String str = bReader.readLine();
+    SimpleDateFormat format = new SimpleDateFormat("DD/MM/YY");
+    Date date = format.parse(str);
+} catch(ParseException | IOException ex) {
 
-#### Working with Path
-
-
-
-#### Fork and Join
-
-
-
-#### Supporting dynamism
-
-
+}
+```
 
 ## Java8
 
 ### Lambda Expressions
 
-
+```java
+Arrays.asList( "a", "b", "c" ).forEach(e -> {
+	dSystem.out.println( e );
+});
+```
 
 ### Method References
 
