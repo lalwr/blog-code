@@ -191,7 +191,161 @@ public class CustomClassLoader extends ClassLoader {
 }
 ```
 
+위의 예에서는 기본 클래스 로더를 확장하고 지정된 파일에서 바이트 배열을 로드하는 사용자 지정 클래스 로더를 정의했습니다.
 
+
+
+##  *java.lang.ClassLoader에 대한 이해*
+
+java.lagng의 몇 가지 필수적인 방법에 대해 토론해 보겠습니다. ClassLoader 클래스는 작동 방식을 보다 명확하게 보여줍니다.
+
+
+
+### The *loadClass()* Method
+
+```java
+public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+```
+
+이 메서드는 지정된 이름 매개 변수를 사용하여 클래스를 로드합니다. 이름 매개 변수는 정규화된 클래스 이름을 나타냅니다.
+
+Java 가상 시스템은 loadClass() 메서드를 호출하여 클래스 참조 설정이 true로 확인되도록 합니다. **그러나 클래스를 해결할 필요가 항상 있는 것은 아닙니다. 클래스가 있는지 여부만 확인하면 확인 매개 변수가 false로 설정됩니다.**
+
+이 방법은 클래스 로더의 진입점 역할을 합니다.
+
+java.lang의 소스 코드에서 loadClass() 메서드의 내부 작업을 이해할 수 있습니다. ClassLoader는 다음과 같습니다.
+
+```java
+protected Class<?> loadClass(String name, boolean resolve)
+  throws ClassNotFoundException {
+     
+    synchronized (getClassLoadingLock(name)) {
+        // First, check if the class has already been loaded
+        Class<?> c = findLoadedClass(name);
+        if (c == null) {
+            long t0 = System.nanoTime();
+                try {
+                    if (parent != null) {
+                        c = parent.loadClass(name, false);
+                    } else {
+                        c = findBootstrapClassOrNull(name);
+                    }
+                } catch (ClassNotFoundException e) {
+                    // ClassNotFoundException thrown if class not found
+                    // from the non-null parent class loader
+                }
+ 
+                if (c == null) {
+                    // If still not found, then invoke findClass in order
+                    // to find the class.
+                    c = findClass(name);
+                }
+            }
+            if (resolve) {
+                resolveClass(c);
+            }
+            return c;
+        }
+    }
+```
+
+메서드의 기본 구현에서는 다음 순서로 클래스를 검색합니다.
+
+1. findLoadedClass(String) 메서드를 호출하여 클래스가 이미 로드되었는지 확인합니다.
+2. 상위 클래스 로더에서 loadClass(String) 메서드를 호출합니다.
+3. findClass(String) 메서드를 호출하여 클래스를 찾습니다.
+
+
+
+### The *defineClass()* Method
+
+```java
+protected final Class<?> defineClass(
+  String name, byte[] b, int off, int len) throws ClassFormatError
+```
+
+이 방법은 바이트 배열을 클래스의 인스턴스로 변환하는 역할을 합니다. 그리고 class 사용하기 전에 해결해야 합니다.
+
+데이터에 유효한 클래스가 없는 경우 ClassFormatError가 발생합니다.
+
+또, 이 방법이 최종으로 표시되어 있기 때문에 무효화할 수 없습니다.
+
+
+
+### The *findClass()* Method
+
+```java
+protected Class<?> findClass(
+  String name) throws ClassNotFoundException
+```
+
+이 메서드는 정규화된 이름을 가진 클래스를 매개 변수로 찾습니다. 클래스를 로드하기 위해 위임 모델을 따르는 사용자 지정 클래스 로더 구현에서 이 방법을 재정의해야 합니다.
+
+또한 상위 클래스 로더가 요청된 클래스를 찾을 수 없는 경우 loadClass()가 이 방법을 호출합니다.
+
+클래스 로더의 상위 로더가 클래스를 찾지 못할 경우 기본 구현에서 ClassNotFoundException을 실행합니다.
+
+
+
+### The *getParent()* Method
+
+```java
+public final ClassLoader getParent()
+```
+
+이 메서드는 위임에 대한 상위 클래스 로더를 반환합니다.
+
+섹션 2에 나와 있는 것과 같은 일부 구현에서는 null을 사용하여 부트스트랩 클래스 로더를 나타냅니다.
+
+
+
+### The *getResource()* Method
+
+```java
+public URL getResource(String name)
+```
+
+이 방법은 지정된 이름의 리소스를 찾으려고 합니다.
+
+먼저 리소스에 대한 상위 클래스 로더에 위임합니다. **상위 로더가 null이면 가상 시스템에 내장된 클래스 로더의 경로가 검색됩니다.**
+
+실패하면 findResource(String)를 호출하여 리소스를 찾습니다. 입력으로 지정된 리소스 이름은 클래스 경로에 상대적이거나 절대적일 수 있습니다.
+
+리소스를 읽을 수 있는 URL 개체를 반환하거나, 리소스를 찾을 수 없거나 호출자가 리소스를 반환할 수 있는 적절한 권한이 없는 경우 null을 반환합니다.
+
+Java는 클래스 경로에서 리소스를 로드합니다.
+
+마지막으로, **Java에서 리소스 로딩은** 환경이 리소스를 찾도록 설정된 경우 코드가 실행되고 있는 위치에 관계없이 위치 **독립적인 것으로 간주됩니다.**
+
+
+
+## Context Classloaders
+
+일반적으로 컨텍스트 클래스 로더는 J2SE에 도입된 클래스 로딩 위임 체계에 대한 대체 방법을 제공합니다.
+
+앞서 살펴본 것처럼 **JVM의 클래스 로더는 모든 클래스 로더가 부트스트랩 클래스 로더를 제외한 단일 상위 로더를 갖도록 계층적 모델을 따릅니다.**
+
+그러나 JVM 코어 클래스가 애플리케이션 개발자가 제공하는 클래스나 리소스를 동적으로 로드해야 하는 경우 문제가 발생할 수 있습니다.
+
+예를 들어, JNDI에서는 핵심 기능이 rt.jar의 부트스트랩 클래스에 의해 구현됩니다. 그러나 이러한 JNDI 클래스는 독립 공급업체에서 구현한 JNDI 공급자를 로드할 수 있습니다(애플리케이션 클래스 경로에 배포됨). 이 시나리오에서는 부트스트랩 클래스 로더(상위 클래스 로더)가 애플리케이션 로더(하위 클래스 로더)에 표시되는 클래스를 로드해야 합니다.
+
+**J2SE 대표단은 여기서 작동하지 않으며, 이 문제를 해결하려면 다른 수업 로드 방법을 찾아야 합니다. 또한 스레드 컨텍스트 로더를 사용하여 달성할 수 있습니다.**
+
+java.lang.Thread의 클래스에는 특정 스레드에 대한 ContextClassLoader를 반환하는 메서드 getContextClassLoader()가 있습니다. ContextClassLoader는 리소스 및 클래스를 로드할 때 스레드의 생성자가 제공합니다.
+
+값이 설정되지 않으면 기본적으로 상위 스레드의 클래스 로더 컨텍스트로 설정됩니다.
+
+
+
+## 결론
+
+Java 프로그램을 실행하려면 클래스 로더가 필수적입니다. 이 내용의 일부로 좋은 소개를 제공해 드렸습니다.
+
+부트스트랩, 확장 및 시스템 클래스 로더 등 다양한 유형의 클래스 로더에 대해 설명했습니다. Bootstrap은 모든 Bootstrap의 상위 역할을 하며 JDK 내부 클래스를 로드하는 역할을 합니다. 반면 확장 및 시스템은 각각 Java 확장 디렉토리와 클래스 경로에서 클래스를 로드합니다.
+
+그런 다음 클래스 로더의 작동 방식에 대해 이야기하고 위임, 가시성, 고유성 등의 몇 가지 기능에 대해 논의한 후 맞춤형 로더를 만드는 방법에 대해 간략하게 설명했습니다. 마지막으로 컨텍스트 클래스 로더에 대한 소개를 제공했습니다.
+
+코드 샘플은 항상 [GitHub](https://github.com/eugenp/tutorials/tree/master/core-java/src/main/java/com/baeldung/classloader)에서 찾을 수 있습니다.
 
 
 
