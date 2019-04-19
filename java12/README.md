@@ -174,7 +174,53 @@ API 사양의 초안 스냅 샷은 [여기](http://cr.openjdk.java.net/~vromero/
 
 
 
-### JEP 340: 2개가 아닌 1개의 AArch64 포트
+예제에 대해 알아봅니다.
+
+#### String # indent (int)
+
+간단하게 들릴 수 있듯이이 메서드를 사용하면 String 인스턴스의 들여 쓰기를 조정할 수 있습니다.
+
+격차를 염두에 둔다.
+
+```java
+String result = "foo\nbar\nbar2".indent(4);
+System.out.println(result);
+//    foo
+//    bar
+//    bar2
+
+System.out.println(result.length()); // 25
+```
+
+이것은 [JEP-326 - 구현 세부 사항](https://openjdk.java.net/jeps/326)을 둘러싼 논쟁으로 JDK 12에서 철회 된 [원시 문자열 리터럴](https://mail.openjdk.java.net/pipermail/jdk-dev/2018-December/002402.html)을 보완하기로되어 있습니다.
+
+
+
+#### String # transform (function)
+
+[JDK-8203442](https://bugs.openjdk.java.net/browse/JDK-8203442)에서 소개 된 약간의 메소드로, 제공된 String 인스턴스를 입력으로 제공하고 해당 함수가 반환하는 출력을 반환합니다.
+
+이제 예제를 살펴 보겠습니다.
+
+```java
+var result = "foo".transform(input -> input + " bar");
+System.out.println(result); // foo bar
+```
+
+다음과 같이 연결할 수도 있습니다.
+
+```java
+var result = "foo"
+  .transform(input -> input + " bar")
+  .transform(String::toUpperCase)
+System.out.println(result); // FOO BAR
+```
+
+
+
+
+
+#### JEP 340: 2개가 아닌 1개의 AArch64 포트
 
 #### 요약
 
