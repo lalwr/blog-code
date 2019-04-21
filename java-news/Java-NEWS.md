@@ -2,6 +2,237 @@
 
 
 
+# Java 8에서 Java 12로 업그레이드
+
+
+
+## 주요 요점
+
+- Java 8부터 새로운 도구 및 가비지 수집을위한 성능 향상과 함께 여러 가지 유용한 새로운 언어 기능이 도입되었습니다.
+- 업그레이드를 선택하면 최신 Java 버전 (12)으로 업그레이드할지 6 개월마다 업그레이드 할 준비가되어 있는지 여부가 결정됩니다. 또는 최신 LTS (11)로 업그레이드하여 다음 업그레이드에 대해 생각해 보는 데 3 년이 걸릴 수 있습니다.
+- 컴파일러 경고를 무시하려고하지 마십시오. 이 근대 자바 세계에서는 비추천이 훨씬 더 심각하게 받아 들여지고 있으며, Java 10과 Java 11 모두 API가 제거되었습니다.  
+- Java 9에서 변경된 사항 중 하나는 내부 API (주로 sun.misc. *로 시작하는 패키지의 클래스)가 사용되지 않는다는 것입니다. JDK의 핵심이 아닌 API도 Java 11에서 제거되었습니다. 이러한 변경은 응용 프로그램에 영향을 줄 수 있지만 이러한 문제점을 피할 수있는 확실한 경로가 있습니다.
+- 이 첫 번째 업그레이드의 "혹독한 상황"을 극복 한 후에는 적어도 Java의 최신 버전 (예 : CI)에서 6 개월마다 응용 프로그램을 테스트하는 것이 좋습니다. 
+
+
+
+기업은 전통적으로 Java의 최신 버전이 완전히 입증 될 때까지 Java의 최신 버전으로 업그레이드하는 것을 꺼려했습니다.  Java 9가 2017 년 9 월에 출시 된 이후 [6 개월마다 새로운 버전의 Java](https://www.infoq.com/news/2017/09/Java6Month) 가 출시됨에 따라 점점 어려워지고 있습니다  . 따라서 Java 9가 2 년 미만이더라도 최신 버전은 Java 12입니다.
+
+이러한 변화의 속도는 위협적 일 수 있으며 [, 대다수의 애플리케이션이 여전히 실행중인](https://res.cloudinary.com/snyk/image/upload/v1539774333/blog/jvm-ecosystem-report-2018.pdf)Java 8에서 Java 12 로의 업그레이드  가 많은 작업이 될 수 있습니다. 이 기사에서는 다음을 살펴 보겠습니다.
+
+- 업그레이드의 이점
+- 업그레이드시 발생할 수있는 문제
+- 업그레이드를위한 몇 가지 팁
+
+
+
+## 왜 업그레이드해야합니까?
+
+업그레이드 방법에 대해 자세히 알기 전에 우리는 왜 우리가 원하는지 심각하게 생각해야합니다.
+
+
+
+### 특징들
+
+개발자는 언어를 업데이트 할 때마다 새로운 언어 기능이나 API에 가장 관심이 있습니다. Java 8부터는 많은 새로운 기능과 작업 방식을 바꿀 수있는 새로운 도구가있었습니다. 개발자가 최신 버전의 Java로 작업 할 때 더 쉽게 사용할 수 있다고 말한 주요 기능을 선택했습니다.
+
+[지역 변수 형 유추](http://openjdk.java.net/jeps/286)  ( `var`)는 문언 적 설탕의 좋은 예로서 상용구 코드를 줄이는 데 도움이됩니다. 모든 가독성 문제에 대한 해결책은 아니지만 적절한시기에이 코드를 사용하면 코드의 독자가 상용어가 아닌 비즈니스 논리에 집중할 수 있습니다.
+
+[편리한 팩토리 컬렉션 메소드를](http://openjdk.java.net/jeps/269)  사용하면리스트, 맵 및 세트와 같은 콜렉션을 훨씬 쉽게 작성할 수 있습니다. 또한 팩토리 메소드는 수정 불가능한 콜렉션을 작성하여 사용하기가 더 안전합니다.
+
+새로운 Collector for Streams 조작을 사용하여 결과를 불변 콜렉션에 넣을 수있는 [수정 불가능한 콜렉션으로의 수집](https://docs.oracle.com/javase/10/core/creating-immutable-lists-sets-and-maps.htm#JSCOR-GUID-29B476E6-66E9-4C95-B744-874ECA6FAB51)이 가능합니다.
+
+[Predicate ::](https://bugs.openjdk.java.net/browse/JDK-8203428)  는 술어 lambda 나 메소드 참조를 무효화하는 쉬운 방법을 제공 [하지 않으며](https://bugs.openjdk.java.net/browse/JDK-8203428) , 다시 우리 코드에서 보일러 플레이트를 줄입니다.
+
+[Optional에](https://docs.oracle.com/en/java/javase/12/docs/api/java.base/java/util/Optional.html)  대한 [새로운 방법은](https://docs.oracle.com/en/java/javase/12/docs/api/java.base/java/util/Optional.html) 서투른 ifstatements를 사용하지 않고 Optional을 사용할 때 기능적 스타일로 코딩하기위한 더 많은 옵션을 제공합니다.
+
+[JShell](https://docs.oracle.com/javase/9/jshell/introduction-jshell.htm#JSHEL-GUID-630F27C8-1195-4989-9F6B-2C51D46F52C8)  은  Java에서 개별 코드 줄 또는 스크립트를 실행할 수 있는  [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) 입니다. 새로운 기능을 시험해 볼 수있는 좋은 방법이며, 프로덕션 응용 프로그램 코드에서 새 버전의 Java를 채택 할 필요없이 개발 시스템에서 로컬로 사용할 수 있습니다.
+
+[HttpClient를](https://openjdk.java.net/groups/net/httpclient/intro.html)  의 JDK에 내장. 거의 모든 사람들이 웹 애플리케이션이나 REST 서비스 등을 통해 어떤 형태로든 HTTP로 작업하고있다. 내장 클라이언트는 외부 종속성에 대한 필요성을 없애고 동기 및 비동기 프로그래밍 모델 모두에서 HTTP 1.1 및 2를 지원합니다.
+
+[다중 릴리스 jar 파일](http://openjdk.java.net/jeps/238)  은 개발자가 최신 버전의 Java 및 이전 버전을 사용해야하는 개발자의 요구를 지원하는 데 사용할 수있는 도구 라이브러리 중 하나입니다.
+
+[JLink](https://docs.oracle.com/javase/9/tools/jlink.htm#JSWOR-GUID-CECAC52B-CFEE-46CB-8166-F17A8E9280E9)  는 [Java Module System에](https://www.oracle.com/corporate/features/understanding-java-9-modules.html) 의해 가능하게 된 환상적인 도구로   , 우리가 정말로 필요로하는 JDK의 섹션 만 패키지하고 배포 할 수 있습니다.
+
+
+
+### 성능
+
+일반적으로 각 새 릴리즈는 이전 릴리즈보다 성능이 우수합니다. "Better"는 여러 가지 형태를 취할 수 있지만, 최근 릴리즈에서는 시작 시간이 향상되고 메모리 사용량이 감소하며, 특정 CPU 명령의 사용이 증가하여 CPU 주기를 적게 사용하는 코드를 볼 수 있습니다.  Java 9, 10, 11 및 12는 모두 기본 Garbage Collector를 G1로 변경하고 G1로 개선했으며, 세 가지 새로운 실험 Garbage Collector(Java 11의 Epsilon 및 ZGC, Java 12의 Senandoah)를 포함하여 Garbage Collection에 상당한 변화와 개선이 있었습니다. 3개는 과잉 살상처럼 보일 수 있지만 각 수집기는 서로 다른 사용 사례에 맞게 최적화되므로, 이제 최신 쓰레기 수집기를 선택할 수 있습니다. 이 중 1개는 애플리케이션에 가장 적합한 프로파일을 가질 수 있습니다.
+
+
+
+### 비용 절감
+
+Java의 최신 버전이 개선되면 비용이 절감될 수 있습니다. JLink와 같은 모든 툴이 NAT이 구현하는 아티팩트의 크기를 줄이고, 최근 메모리 사용량을 개선하면 클라우드 컴퓨팅 비용을 절감할 수 있습니다.
+
+최신 버전의 언어를 사용하면 다양한 개발자를 유치할 수 있다는 점에서 고려할 또 다른 잠재적인 이점이 있습니다. 많은 개발자들이 새로운 것을 배우고 기술을 업그레이드하기를 원하기 때문입니다. Java의 최신 버전을 사용하는 것은 개발자의 보존과 채용에 영향을 미치며, 궁극적으로 팀 운영 비용에 영향을 미칩니다.
+
+
+
+### 업그레이드 우려 사항
+
+Java 8 이후 많은 것들이 변했고, 언어 기능만 변하지는 않았습니다. Oracle은 서로 다른 라이센스(생산에 사용하기 위해 지불해야 하는 상업용 빌드와 오픈 소스 OpenJDK 빌드)를 가진 두 가지 빌드를 출시하기 시작했고 업데이트 및 지원 모델을 변경했습니다. 이로 인해 지역사회가 다소 혼란스러워졌지만, 궁극적으로 우리가 사용하는 JDK에 대해 더 많은 선택권을 제공했다는 것을 의미합니다. JDK에서 원하는 옵션과 옵션을 모두 고려해야 합니다.
+
+
+
+### 어떤 버전?
+
+최신 버전이 Java 12인 경우 Java 8에서 Java 8로 업그레이드할 수 있는 다양한 버전이 있을 수 있습니다. 사실 선택은 이것보다 조금 더 간단합니다. 이제 6개월마다 릴리즈가 있으며, 각각의 새로운 릴리즈가 이전 릴리즈를 대체합니다. 3년마다 LTS(Long Term Support) 릴리즈가 있습니다. 이는 조직이 6개월마다 최신 버전으로 업그레이드하거나 3년마다 기존 스타일의 대규모 업그레이드를 수행하여 다음 LTS 릴리스에 적합한 업그레이드 경로를 선택할 수 있도록 하기 위한 것입니다. Java 8은 LTS였지만, Oracle은 올해 1월에 상업적 용도로 Java 8에 대한 업데이트를 제공하지 않았습니다. Java 11은 현재 LTS이며, Oracle은 Java 12가 출시되었기 때문에 이를 위해 무료 상용 업데이트를 제공하지 않지만, 최소 3년 동안 업데이트를 제공할 조직에서는 JDK가 많이 구축되어 있습니다.
+
+Java의 최신 버전(12개)으로 업그레이드하고 6개월마다 업그레이드할 준비가 되거나, 최신 LTS(11개)로 업그레이드하여 다음 업그레이드에 대해 3년 동안 생각해 볼 수 있습니다.  대규모 조직은 LTS 릴리스에서 LTS 릴리스로 전환하고, 신생 기업은 6개월마다 업데이트할 수 있을 것으로 예상됩니다.  더 빠르고 예측 가능한 석방 연대의 가장 좋은 점은 두 가지 옵션을 모두 지원한다는 것입니다.
+
+
+
+### 어느 빌드?
+
+Oracle이 LTS 릴리스에 대한 무료 업데이트를 제공하지 않는다고 해서 운영 환경에서 LTS를 실행하고 무료 업그레이드를 받을 수 없는 것은 아닙니다.  OpenJDK(Or Oracle 상용 JDK도 기반으로 하는 JDK의 레퍼런스 구현)를 제공하는 조직과 벤더도 많이 있습니다. 여기에 모든 항목을 열거하는 대신 무료 OpenJDK 빌드 공급자, 무료 공개 업데이트가 제공되는 날짜 및 상업적 지원의 세부 정보를 포함하는 이 목록을 확인하실 수 있습니다.
+
+이게 예전보다 더 복잡해 보일 수도 있어요 고려해야 할 요소들이 더 있다, 사실이지만, 선택의 폭이 더 넓어지는 부작용입니다. Java 챔피언스에서는 라이센스, 지원, 업데이트 및 다양한 옵션에 대한 보다 완벽한 논의를 준비했습니다. 이 주제에 대한 QCon London 2019의 Q&A 세션도 있습니다.
+
+
+
+### 자바 9가 모든 것을 깨뜨리지 않았나?
+
+많은 개발자들이 Java 8에서 업그레이드하는 것에 대해 생각할 때 가장 우려하는 것은 Java 9에서 오는 큰 변화와 이러한 변경으로 인해 애플리케이션이 중단될 수 있다는 우려입니다. 변경 사항 중 하나는 내부 API의 캡슐화입니다. 즉, JDK에서 사용하던 일부 메서드는 더 이상 액세스할 수 없습니다. 이는 Java 9가 출시될 당시 tools.jar 및 rt.jar의 제거와 함께 놀라운 것처럼 보였지만, 사후 인식에서는 애플리케이션 개발자보다 라이브러리, 프레임워크 및 언어 개발자에게 더 큰 문제가 된 것으로 보입니다.
+
+애플리케이션이 내부 API 사용이나 더 이상 사용되지 않는 경우 Java 9 또는 그 이상으로 마이그레이션하는 것은 생각보다 어렵지 않습니다. 커뮤니티에 직면한 많은 문제들은 실제로 우리가 사용하는 빌드 도구와 라이브러리에서 해결되었습니다.
+
+
+
+## 업그레이드를 위한 포인터
+
+모든 업그레이드 프로세스는 마이그레이션되는 애플리케이션에 한정됩니다. 그러나 프로세스를 용이하게 하는 데 도움이 되는 몇 가지 기본적인 모범 사례가 있습니다. 이러한 항목은 해결되어야 하는 순서대로 요약되어 있으며, 처음 몇 단계에서는 업데이트된 JDK를 사용할 필요도 없습니다.
+
+
+
+### 컴파일러 경고를 처리
+
+경고는 이유가 있습니다. 경고문을 읽으면 미래에 사라질지도 모르는 기능에 대해 자주 이야기합니다. Java 8에서 Java 8 JDK로 작업할 때 사용해서는 안 되는 기능에 대한 감가상각 경고 또는 경고가 표시되면(그림 1 참조) 최신 JDK로 이동하기 전에 이러한 경고를 수정합니다.
+
+[![img](https://res.infoq.com/articles/upgrading-java-8-to-12/en/resources/1upgrading-java-8-to-12-bs-1554841840165.jpeg)](https://res.infoq.com/articles/upgrading-java-8-to-12/en/resources/upgrading-java-8-to-12-b-1554841838858.jpg)
+
+**그림 1 - JDK 8의 컴파일러 경고 예제**
+
+오늘날의 Java 세계에서는 더 이상 지원이 중단되었으며  [Java 10](http://cr.openjdk.java.net/~iris/se/10/pfd/java-se-10-pfd-spec-01/#APIs-removed)  과  [Java 11은](http://cr.openjdk.java.net/~iris/se/11/spec/pfd/java-se-11-pfd-spec/#APIs-removed)  모두 API를 제거했습니다.
+
+
+
+### 내부 API 사용 확인
+
+Java 9에서 발생한 변경 사항 중 하나는 내부 API (주로 시작되는 패키지의 클래스 `sun.misc.*`)가 사용되지 못하도록 숨겨져 있다는  것입니다.
+
+JDK의 일부인 [jdeps](https://docs.oracle.com/javase/8/docs/technotes/tools/unix/jdeps.html) 도구를  `-jdkinternals`사용하면 일련의 클래스가 사용해서는 안되는 것을 사용하고 있는지 확인하기 위한 플래그를 사용 하여 실행할 수 있습니다  . 예를 들어, 프로젝트의 출력 디렉토리에서 다음 명령을 실행하면 :
+
+```shell
+> $JAVA_HOME\bin\jdeps -jdkinternals .
+```
+
+그럼 나는 다음과 같은 결과를 얻는다.
+
+```java
+. -> /Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home/jre/lib/rt.jar
+   com.mechanitis.demo.sense.twitter.connector.TwitterOAuth (.)
+  	-> sun.misc.BASE64Encoder    JDK internal API (rt.jar)
+  	-> sun.misc.Unsafe           JDK internal API (rt.jar)
+
+Warning: JDK internal APIs are unsupported and private to JDK implementation that are subject to be removed or changed incompatibly and could break your application.
+Please modify your code to eliminate dependency on any JDK internal APIs. For the most recent update on JDK internal API replacements, please check: https://wiki.openjdk.java.net/display/JDK8/Java+Dependency+Analysis+Tool
+
+JDK Internal API                Suggested Replacement
+----------------                ---------------------
+sun.misc.BASE64Encoder          Use java.util.Base64 @since 1.8
+sun.misc.Unsafe                 See http://openjdk.java.net/jeps/260
+```
+
+이 도구는 내부 API를 사용하는 클래스를 식별 할뿐만 아니라 대신 사용할 API를 제안합니다.
+
+
+
+### 빌드 도구 업그레이드
+
+Maven 또는 Gradle을 사용하고 있다면 업그레이드해야합니다.
+
+#### 그래들
+
+Gradle 5.0은 Java 11에 대한 지원을 도입 했으므로 적어도 5.0을 사용해야합니다. [현재 버전은 5.3.1](https://docs.gradle.org/current/release-notes.html)  이며 지난 달에 릴리스되었습니다.
+
+#### 메이븐
+
+최소한 버전 3.5.0 ( [현재 버전은 3.6.0](https://maven.apache.org/docs/3.6.0/release-notes.html) ) 이상을 실행 해야하며 Maven 컴파일러 플러그인이 버전 3.8 이상인지 확인해야합니다.
+
+```java
+<plugin>
+   <groupId>org.apache.maven.plugins</groupId>
+   <artifactId>maven-compiler-plugin</artifactId>
+   <version>3.8.0</version>
+   <configuration>
+       <release>11</release> <!-- or 12 -->
+   </configuration>
+</plugin>
+```
+
+
+
+### 종속성 업그레이드
+
+Java 9 이상으로 마이그레이션하는 것과 관련하여 들었을 수있는 몇 가지 문제는 라이브러리 및 프레임 워크가 직면 한 (그리고 잠재적으로 해결할 수있는) 문제입니다. 예를 들어 많은 프레임 워크는 리플렉션 및 내부 API를 사용합니다. 응용 프로그램이 계속 올바르게 작동 할 수있는 최상의 기회를 가지려면 모든 종속성이 최신 상태인지 확인해야합니다. 많은 라이브러리가 Java 9 및 그 이상에서 작동하도록 이미 업데이트되었으며   계속 진행될 수 있도록 [지속적인 커뮤니티 노력](https://www.infoq.com/news/2018/06/Java9AdoptionJun18) 이 진행 중입니다.
+
+일부 종속성을 대체해야 할 수도 있습니다.  예를 들어 Java의 모든 최신 버전에서 잘 작동하므로 많은 라이브러리가  [Byte Buddy](https://bytebuddy.net/#/) 로 코드 생성 및 프록시를 위해 이동했습니다. Java 11 로의 이주를 조사 할 때 종속성을 잘 이해하고 있어야하며 8 이후의 Java 버전을 지원하도록 갱신되었는지 여부를 잘 알고 있어야합니다.
+
+
+
+### 이동 한 기능에 대한 종속성 추가
+
+JDK에서 핵심이 아닌 API는 제거되었습니다. 여기에는  [Java EE 및 Corba 모듈](http://openjdk.java.net/jeps/320)  과  [JavaFX가 포함](https://blogs.oracle.com/java-platform-group/the-future-of-javafx-and-other-java-client-roadmap-updates) 됩니다. 종속성 관리에 올바른 라이브러리를 추가하여 수정하는 것이 일반적으로 쉽습니다. 예를 들어  Gradle 또는 Maven 에 [JAXB](https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api) 에 종속성을 추가합니다  . JavaFX는 약간 더 복잡한 경우이지만  [OpenJFX 사이트에 좋은 설명서가 있습니다](https://openjfx.io/openjfx-docs/) .
+
+
+
+### 새 JDK로 응용 프로그램 실행
+
+최신 버전의 Java를 사용하기 위해 응용 프로그램을 다시 컴파일 할 필요가 없습니다. 이는 언어 개발자가 하위 호환성을 유지하기 위해 열심히 노력하는 이유 중 하나입니다. 코드 변경없이 새 JDK를 사용하여 (예를 들어) 지속적인 통합 환경에서 응용 프로그램을 실행할 수 있습니다.
+
+
+
+### 새로운 JDK로 컴파일
+
+우리는 이전의 모든 단계에서 여전히 Java 8로 애플리케이션을 컴파일 할 수 있습니다. 이러한 다른 단계를 수행 한 경우에만 Java 11 또는 12에 대한 컴파일을 고려해야합니다. 새로운 기능을 사용하지 않으려면 더 낮은 언어 버전으로 응용 프로그램을 컴파일 할 수 있습니다. 구 버전. 예를 들어, Maven :
+
+```xml
+<plugin>
+   <groupId>org.apache.maven.plugins</groupId>
+   <artifactId>maven-compiler-plugin</artifactId>
+   <version>3.8.0</version>
+   <configuration>
+       <release>8</release>
+   </configuration>
+</plugin>
+```
+
+또는 Gradle :
+
+```shell
+sourceCompatibility = JavaVersion.VERSION_1_8
+```
+
+
+
+### 새로운 기능 사용 시작
+
+모든 것이 작동 할 때만 모든 테스트가 실행되고 모든 것이 성능에 현명한 것으로 보입니다. 그리고 프로덕션 환경에서 안전하게 실행되는 동안 새로운 언어 기능의 사용을 고려해야합니다. 
+
+또한 Java 9 릴리스는 Java Module System에 관한 것이었지만 응용 프로그램은 Java Module System을 지원하는 버전으로 마이그레이션 했더라도 응용 프로그램을 전혀 사용할 필요가 없음을 기억하십시오. 그러나 모듈 시스템을 채택하고 [싶다면 InfoQ](https://www.infoq.com/articles/Java-Jigsaw-Migration-Guide) 의  [튜토리얼을 참조하십시오](https://www.infoq.com/articles/Java-Jigsaw-Migration-Guide) .
+
+
+
+## 요약
+
+Java 8 이후 많은 변화가있었습니다. 6 개월마다 릴리스가 발생합니다. 라이센스, 업데이트 및 지원이 변경되었습니다. JDK를 가져온 곳이 변경되었을 수 있습니다. 그 외에 Java 9에 포함 된 주요 변경 사항을 포함하여 새로운 언어 기능이 있습니다.하지만 이제 Java 11이 Java 8을 최신 LTS로 대체했으며 이제 주요 라이브러리, 프레임 워크 및 빌드 도구에서 Java 8을 채택했습니다. 최신 버전의 Java에서는 응용 프로그램을 Java 11 또는 12로 마이그레이션하는 것이 좋습니다.  
+
+이 첫 번째 업그레이 드의 "혹독한 상황"을 극복 한 후에는 적어도 Java의 최신 버전 (예 : CI)에서 6 개월마다 응용 프로그램을 테스트하는 것이 좋습니다. 이상적인 세상에서 6 개월마다 Java의 차기 버전을 사용하고 가능한 한 빨리 새로운 기능을 사용할 수있는이 6 개의 월간 릴리스 트레인을 이용할 수도 있습니다.
+
+
+
 # Java 관련 News
 
 
@@ -673,17 +904,17 @@ Set<String> set = Collections.unmodifiableSet(Stream.of("a", "b", "c").collect(t
 **After**
 
 ```java
-Set<String> set = Set.**of**("a", "b", "c");
+Set<String> set = Set.of("a", "b", "c");
 
-List.**of**(a, b, c);
+List.of(a, b, c);
 
-Set.**of**(d, e, f, g);
+Set.of(d, e, f, g);
 
-Map.**of**()
+Map.of()
 
-Map.**of**(k1, v1)
+Map.of(k1, v1)
 
-Map.**ofEntries**(
+Map.ofEntries(
 
     entry(k1, v1),
 
@@ -1452,3 +1683,4 @@ for (int i = 0; i < MAX_VALUE; ++i) {
 - https://jusungpark.tistory.com/
 - <https://exien.tistory.com/85>
 - https://jusungpark.tistory.com/57
+- <https://www.infoq.com/articles/upgrading-java-8-to-12?utm_source=facebook&utm_medium=link&utm_campaign=calendar>
