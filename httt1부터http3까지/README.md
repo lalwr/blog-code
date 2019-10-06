@@ -20,7 +20,7 @@ HTTP/1.1에서는 하나의 Connection당 하나의 요청을 처리 한다. 동
 
 > 요즘 브라우저들은 http/1.1이 단점을 극복하기 위해 다수의 Connection을 생성해서 병렬로 요청을 보내지만 브라우저 별로 [Domain당 Connection개수의 제한](http://www.browserscope.org/?category=network&v=top)이 존재합니다.
 
-![img](/Users/mac/GitHub/blog-code/http1-http2-diffrence/images/HTTPSharding.png)
+![img](./images/HTTPSharding.png)
 
 그렇다 보니 다수의 리소스를 처리하려면  Latency가 길어지게 된다.
 
