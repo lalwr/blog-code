@@ -45,7 +45,7 @@ Command용 Database와 Query용 Database를 분리하고 별도의 Broker를 통
 
 ### EventSourcing 적용
 
-![img](.\images\CQRS4.png)
+![](./images/CQRS4.png)
 
 EventSourcing이란 Application내의 모든 Activity를 이벤트로 전환해서 이벤트 스트림(Event Stream)을 별도의 Database에 저장하는 방식이다. 이벤트 스트림을 저장하는 Database에는 오직 데이터 추가만 가능하고 계속적으로 쌓인 데이터를 구체화(Materialized) 시키는 시점에서 그때 까지 구축된 데이터를 바탕으로 조회대상 데이터를 작성하는 방법을 말한다. 
 
