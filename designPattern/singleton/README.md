@@ -172,8 +172,6 @@ Singleton 클래스가 로드 되어도 내부 클래스는 로드된 상태가 
 
 
 
-
-
 ### **정리**
 
 - 정적 초기화 방법은 구현하기 쉽지만 리소스 및 CPU 시간이 낭비 될 수 있습니다. 클래스 초기화 비용이 리소스 측면에서 적거나 프로그램에 항상 클래스 인스턴스가 필요한 경우에만 사용해야 합니다.
@@ -183,9 +181,387 @@ Singleton 클래스가 로드 되어도 내부 클래스는 로드된 상태가 
 
 
 
-# Singleton 지키는 방법
+## Singleton을 깰 수 있는 방법
 
 
+
+### Reflection
+
+```java
+// Java code to explain effect of Reflection 
+// on Singleton property 
+  
+import java.lang.reflect.Constructor; 
+  
+// Singleton class 
+class Singleton  
+{ 
+    // public instance initialized when loading the class 
+    public static Singleton instance = new Singleton(); 
+      
+    private Singleton()  
+    { 
+        // private constructor 
+    } 
+} 
+  
+public class GFG  
+{ 
+  
+    public static void main(String[] args) 
+    { 
+        Singleton instance1 = Singleton.instance; 
+        Singleton instance2 = null; 
+        try
+        { 
+            Constructor[] constructors =  
+                    Singleton.class.getDeclaredConstructors(); 
+            for (Constructor constructor : constructors)  
+            { 
+                // Below code will destroy the singleton pattern 
+                constructor.setAccessible(true); 
+                instance2 = (Singleton) constructor.newInstance(); 
+                break; 
+            } 
+        } 
+      
+        catch (Exception e)  
+        { 
+            e.printStackTrace(); 
+        } 
+          
+    System.out.println("instance1.hashCode():- " 
+                                      + instance1.hashCode()); 
+    System.out.println("instance2.hashCode():- " 
+                                      + instance2.hashCode()); 
+    } 
+} 
+```
+
+```java
+Output:- 
+instance1.hashCode () :-366712642
+instance2.hashCode () :-1829164700
+```
+
+이 클래스를 실행 한 후에는 hashCode가 다르다는 것을 알 수 있습니다. 즉, 동일한 클래스의 2 개의 객체가 만들어지고 싱글 톤 패턴이 파괴되었음을 의미합니다.
+
+**리플렉션 문제 극복 : 리플렉션으로** 발생한 문제를 극복하기 위해 java는 열거 형 값이 한 번만 인스턴스화되도록 내부적으로 보장하기 때문에 열거 형이 사용됩니다. java Enum은 전역 적으로 액세스 가능하므로 싱글 톤에 사용할 수 있습니다. 그것의 유일한 단점은 융통성이 없으며 즉, 초기화 지연을 허용하지 않는다는 것입니다.
+
+```java
+//Java program for Enum type singleton 
+public enum GFG  
+{ 
+  INSTANCE; 
+} 
+```
+
+열거 형에는 생성자가 없으므로 Reflection에서이를 사용할 수 없습니다. 열거 형에는 기본 생성자가 있으므로 직접 호출 할 수 없습니다. **JVM은 내부적으로 열거 형 생성자의 생성 및 호출을 처리합니다.** 열거 형은 생성자에게 프로그램에 대한 정의를 제공하지 않으므로 Reflection으로도 액세스 할 수 없습니다. 따라서 리플렉션은 열거 형의 경우 싱글 톤 속성을 손상시킬 수 없습니다.
+
+
+
+### 직렬화
+
+직렬화는 단일 클래스의 단일 속성을 손상시킬 수도 있습니다. 직렬화는 바이트 스트림의 오브젝트를 변환하고 파일로 저장하거나 네트워크를 통해 전송하는 데 사용됩니다. 싱글 톤 클래스의 객체를 직렬화한다고 가정합니다. 그런 다음 해당 객체를 직렬화 해제하면 새 인스턴스가 생성되어 싱글 톤 패턴이 중단됩니다.
+
+```java
+// Java code to explain effect of  
+// Serilization on singleton classes 
+import java.io.FileInputStream; 
+import java.io.FileOutputStream; 
+import java.io.ObjectInput; 
+import java.io.ObjectInputStream; 
+import java.io.ObjectOutput; 
+import java.io.ObjectOutputStream; 
+import java.io.Serializable; 
+  
+class Singleton implements Serializable  
+{ 
+    // public instance initialized when loading the class 
+    public static Singleton instance = new Singleton(); 
+      
+    private Singleton()  
+    { 
+        // private constructor 
+    } 
+} 
+  
+  
+public class GFG  
+{ 
+  
+    public static void main(String[] args)  
+    { 
+        try
+        { 
+            Singleton instance1 = Singleton.instance; 
+            ObjectOutput out 
+                = new ObjectOutputStream(new FileOutputStream("file.text")); 
+            out.writeObject(instance1); 
+            out.close(); 
+      
+            // deserailize from file to object 
+            ObjectInput in  
+                = new ObjectInputStream(new FileInputStream("file.text")); 
+              
+            Singleton instance2 = (Singleton) in.readObject(); 
+            in.close(); 
+      
+            System.out.println("instance1 hashCode:- "
+                                                 + instance1.hashCode()); 
+            System.out.println("instance2 hashCode:- " 
+                                                 + instance2.hashCode()); 
+        }  
+          
+        catch (Exception e)  
+        { 
+            e.printStackTrace(); 
+        } 
+    } 
+} 
+```
+
+```java
+Output:- 
+instance1 hashCode:- 1550089733
+instance2 hashCode:- 865113938
+```
+
+보시다시피, 두 인스턴스의 hashCode가 다르므로 싱글 톤 클래스의 객체가 2 개 있습니다. 따라서 클래스는 더 이상 싱글 톤이 아닙니다.
+
+**직렬화 문제 극복 :** 이 문제를 극복하려면 readResolve () 메소드를 구현해야합니다.
+
+```java
+// Java code to remove the effect of  
+// Serialization on singleton classes 
+import java.io.FileInputStream; 
+import java.io.FileOutputStream; 
+import java.io.ObjectInput; 
+import java.io.ObjectInputStream; 
+import java.io.ObjectOutput; 
+import java.io.ObjectOutputStream; 
+import java.io.Serializable; 
+  
+class Singleton implements Serializable  
+{ 
+    // public instance initialized when loading the class 
+    public static Singleton instance = new Singleton(); 
+      
+    private Singleton()  
+    { 
+        // private constructor 
+    } 
+      
+    // implement readResolve method 
+    protected Object readResolve() 
+    { 
+        return instance; 
+    } 
+} 
+  
+public class GFG  
+{ 
+  
+    public static void main(String[] args)  
+    { 
+        try
+        { 
+            Singleton instance1 = Singleton.instance; 
+            ObjectOutput out  
+                = new ObjectOutputStream(new FileOutputStream("file.text")); 
+            out.writeObject(instance1); 
+            out.close(); 
+          
+            // deserailize from file to object 
+            ObjectInput in  
+                = new ObjectInputStream(new FileInputStream("file.text")); 
+            Singleton instance2 = (Singleton) in.readObject(); 
+            in.close(); 
+          
+            System.out.println("instance1 hashCode:- "
+                                           + instance1.hashCode()); 
+            System.out.println("instance2 hashCode:- "
+                                           + instance2.hashCode()); 
+        }  
+          
+        catch (Exception e) 
+        { 
+            e.printStackTrace(); 
+        } 
+    } 
+} 
+```
+
+```java
+Output:- 
+instance1 해시 코드 :-1550089733
+instance2 해시 코드 :-1550089733
+```
+
+두 해시 코드 위에서 동일하므로 다른 인스턴스는 생성되지 않습니다.
+
+
+
+### 복제 
+
+복제는 중복 개체를 만드는 개념입니다. clone을 사용하여 객체의 복사본을 만들 수 있습니다. 우리는 싱글 톤 객체의 복제를 중단 한 다음, 싱글 톤 클래스의 두 인스턴스가있는 사본을 생성해야하므로 클래스는 더 이상 싱글 톤이 아니라고 가정합니다.
+
+```java
+// JAVA code to explain cloning  
+// issue with singleton 
+class SuperClass implements Cloneable 
+{ 
+  int i = 10; 
+  
+  @Override
+  protected Object clone() throws CloneNotSupportedException  
+  { 
+    return super.clone(); 
+  } 
+} 
+  
+// Singleton class 
+class Singleton extends SuperClass 
+{ 
+  // public instance initialized when loading the class 
+  public static Singleton instance = new Singleton(); 
+  
+  private Singleton()  
+  { 
+    // private constructor 
+  } 
+} 
+  
+public class GFG 
+{ 
+  public static void main(String[] args) throws CloneNotSupportedException  
+  { 
+    Singleton instance1 = Singleton.instance; 
+    Singleton instance2 = (Singleton) instance1.clone(); 
+    System.out.println("instance1 hashCode:- "
+                           + instance1.hashCode()); 
+    System.out.println("instance2 hashCode:- " 
+                           + instance2.hashCode());  
+  } 
+} 
+```
+
+```
+Output:- 
+instance1 해시 코드 :-366712642
+instance2 해시 코드 :-1829164700
+```
+
+두 개의 다른 hashCode는 싱글 톤 클래스의 두 가지 다른 객체가 있음을 의미합니다.
+
+**복제 문제 극복 :** 이 문제를 극복하려면 clone () 메소드를 대체하고 CloneNotSupportedException 인 클론 메소드에서 예외를 처리하십시오. 이제 사용자가 싱글 톤 객체의 복제본을 만들려고 할 때마다 예외가 발생하므로 클래스는 싱글 톤으로 유지됩니다.
+
+```java
+// JAVA code to explain overcome  
+// cloning issue with singleton 
+class SuperClass implements Cloneable 
+{ 
+  int i = 10; 
+  
+  @Override
+  protected Object clone() throws CloneNotSupportedException  
+  { 
+    return super.clone(); 
+  } 
+} 
+  
+// Singleton class 
+class Singleton extends SuperClass 
+{ 
+  // public instance initialized when loading the class 
+  public static Singleton instance = new Singleton(); 
+  
+  private Singleton()  
+  { 
+    // private constructor 
+  } 
+  
+  @Override
+  protected Object clone() throws CloneNotSupportedException  
+  { 
+    throw new CloneNotSupportedException(); 
+  } 
+} 
+  
+public class GFG 
+{ 
+  public static void main(String[] args) throws CloneNotSupportedException  
+  { 
+    Singleton instance1 = Singleton.instance; 
+    Singleton instance2 = (Singleton) instance1.clone(); 
+    System.out.println("instance1 hashCode:- " 
+                         + instance1.hashCode()); 
+    System.out.println("instance2 hashCode:- " 
+                         + instance2.hashCode());  
+  } 
+} 
+```
+
+```java
+Output:-
+Exception in thread "main" java.lang.CloneNotSupportedException
+	at GFG.Singleton.clone(GFG.java:29)
+	at GFG.GFG.main(GFG.java:38)
+```
+
+이제 싱글 톤 클래스의 복제본 생성을 중지했습니다. 예외를 발생시키지 않으려면 clone 메소드에서 동일한 인스턴스를 반환 할 수도 있습니다.
+
+```java
+// JAVA code to explain overcome  
+// cloning issue with singleton 
+class SuperClass implements Cloneable 
+{ 
+  int i = 10; 
+  
+  @Override
+  protected Object clone() throws CloneNotSupportedException  
+  { 
+    return super.clone(); 
+  } 
+} 
+  
+// Singleton class 
+class Singleton extends SuperClass 
+{ 
+  // public instance initialized when loading the class 
+  public static Singleton instance = new Singleton(); 
+  
+  private Singleton()  
+  { 
+    // private constructor 
+  } 
+  
+  @Override
+  protected Object clone() throws CloneNotSupportedException  
+  { 
+    return instance; 
+  } 
+} 
+  
+public class GFG 
+{ 
+  public static void main(String[] args) throws CloneNotSupportedException  
+  { 
+    Singleton instance1 = Singleton.instance; 
+    Singleton instance2 = (Singleton) instance1.clone(); 
+    System.out.println("instance1 hashCode:- " 
+                           + instance1.hashCode()); 
+    System.out.println("instance2 hashCode:- "
+                           + instance2.hashCode());  
+  } 
+} 
+```
+
+```java
+Output:-
+instance1 해시 코드 :-366712642
+instance2 해시 코드 :-366712642
+```
 
 
 
