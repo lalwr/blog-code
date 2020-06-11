@@ -49,7 +49,11 @@ Java는 Compiler를 통해 Class 파일로 재생성 되는 과정을 거치며 
 
 Java의 철학을 가장 대변 하는 것이 Class File Format이다. Class 파일은 Btyecode 를 Binary 형태로 담아놓은 것이며 Bytecode는 JVM이 읽을 수 있는 언어를 의미한다. 
 
+JVM은 Class를 로딩한 후 Bytecode을 읽어 실행히 가능하도록 해석(Interpret)하는 과정을 거친다. Class가 Load된 후에는 JIT Compiler 나 Hotspot Compiler 와 같은 **Execution Engine**을 거쳐 실행된다. JVM이 Btyecode를 읽는 한 JVM이 어디에 설치되어 있는지는 상관이 없다. **'Run Everywhere'**가 실현된다.
 
+Bytecode는 Source Code를 단순히 JVM의 언어로 번역해 놓은 것이 때문에 Source Code와 비슷한 크기를 가진다. 작은 크기를 유지할 수 있는 이유는 Class 파일에 실제로 라이브러리를 포함하고 있지 않고, 단지 Symbolic Reference만을 가지고 있기 때문이다.
+
+**Symbolic Reference**는 참조하고자 하는 대상의 이름만으로 참조관계를 구성한 것을 의미한다. 특정 메모리 번지로 참조관계를 구성한 것이 아닌 참초하는 대상의 이름만을 지칭한다. Class 파일이 JVM에 올라가면 Symbolic Reference는 그 이름에 맞는 객체의 주소를 찾아 연결하는 작업을 수행한다. 이러한 작업을 **Dynamic Liking**이라고 한다. Java는 Dynamic Linking 덕분에 Class 파일은 Compact 한 형태를 유지할 수 있다.
 
 
 
