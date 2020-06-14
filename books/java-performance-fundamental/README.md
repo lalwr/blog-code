@@ -55,5 +55,15 @@ Bytecode는 Source Code를 단순히 JVM의 언어로 번역해 놓은 것이 �
 
 **Symbolic Reference**는 참조하고자 하는 대상의 이름만으로 참조관계를 구성한 것을 의미한다. 특정 메모리 번지로 참조관계를 구성한 것이 아닌 참초하는 대상의 이름만을 지칭한다. Class 파일이 JVM에 올라가면 Symbolic Reference는 그 이름에 맞는 객체의 주소를 찾아 연결하는 작업을 수행한다. 이러한 작업을 **Dynamic Liking**이라고 한다. Java는 Dynamic Linking 덕분에 Class 파일은 Compact 한 형태를 유지할 수 있다.
 
+Class File Format의 마지막 특징은 Network Byte Order를 사용한다. ByteOrder는메모리의 주소 값을 할당하는 방식을 의미한다. 메모리 주소의 번지수를 점점 작게 부여하는 것을 뜻한다. Intel 계열의 CPU 는 Little Endian 이란느 ByteOrder를 사용하고 Unix 머신에서 주로 사용되는 CPU 는 Big Endian 방식을 사용한다. 두 CPU에 맞게 생성된 프로그램들은 서로 호환이 되지 않는 문제가 있다.
 
+**Network Byte Order**는 서로 다른 계열의 CPU 끼리 데이터를 전송 받을때의 문제점을 해결하기 위해 정해진 약속이다. 다른 계열에게 Byte Order를 고려하지 않고 보낸다면 서로의 데이터는 주소가 반대로 되어 있어 제대로 전송되지 않을 것이다. 그렇기 때문에 Network를 통해 데이터를 전송할 때는 통일된 방식을 따르기로 약속을 했는데 그것이 Network Byte Order 이다. Big Endian을 사용하기로 약속이 되어있다.
+
+이러한 고려는 Java가 설계 부터 Network를 활용하겠다는 것을 알 수 있다. 
+
+
+
+### The Java Application Interlace
+
+Java API는 Runtime Library의 집합이라고 할 수 있다. 앞에서 Class 파일을 수행하기 위해서는 JER가 필요하다고 했다.  JRE는 Java 실행 환경이다. Java Virtual Machine과 Java API, Native Method 등이 포함되어 있다.
 
