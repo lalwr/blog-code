@@ -63,7 +63,15 @@ Class File Format의 마지막 특징은 Network Byte Order를 사용한다. Byt
 
 
 
-### The Java Application Interlace
+### The Java Application Interface
 
 Java API는 Runtime Library의 집합이라고 할 수 있다. 앞에서 Class 파일을 수행하기 위해서는 JER가 필요하다고 했다.  JRE는 Java 실행 환경이다. Java Virtual Machine과 Java API, Native Method 등이 포함되어 있다.
+
+JavaAPI는 OS과 Java 프로그램을 이어주는 역할을 한다. Native Method를 통해 OS 자원과 연계되어 있고 다른 한편으로는 Java 프로그램과 맞딱드리고 있다. Interface의 역할을 하고 있는 셈이다.
+
+![](.\images\java_api)
+
+Java를 사용하면 파일 시스템의 특정 정보를 읽기 위해서 Platform에 대해 고민 할 필요가 없다. java.io.InputStream을 사용하기만 하면 원하는 정보를 가지고 올 수 있다.
+
+Class 파일 내에 있는 java.io.InputStream의 Symbolic Reference를 이용하여 Runtime시 해당 Instance에 접근하게 된다. 실제 File에 대한 접근은 Native Method를 통해 OS에 명령을 전달한다.
 
