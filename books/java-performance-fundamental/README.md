@@ -73,5 +73,15 @@ JavaAPI는 OS과 Java 프로그램을 이어주는 역할을 한다. Native Meth
 
 Java를 사용하면 파일 시스템의 특정 정보를 읽기 위해서 Platform에 대해 고민 할 필요가 없다. java.io.InputStream을 사용하기만 하면 원하는 정보를 가지고 올 수 있다.
 
-Class 파일 내에 있는 java.io.InputStream의 Symbolic Reference를 이용하여 Runtime시 해당 Instance에 접근하게 된다. 실제 File에 대한 접근은 Native Method를 통해 OS에 명령을 전달한다.
+Class 파일 내에 있는 java.io.InputStream의 Symbolic Reference를 이용하여 Runtime시 해당 Instance에 접근하게 된다. 실제 File에 대한 접근은 Native Method를 통해 OS에 명령을 전달한다. 이후 OS는 실제로 File IO가 실행되고, File IO의 결과가 Native Method를 통해 Java API로 전달되서 프로그램이 실행된다.
+
+Java 프로그램은 단지 Reference를 호출할 뿐이다. 이는 Java Interface를 이용한다는 의미한다. OS와 관계없이 JER가 알아서 수행한다. JRE는 OS나 머신데 따라 설치해야 하지만 설치된 JRE는 모든 Java 프로그램에 동일한 실행환경을 제공한다.
+
+
+
+### The Java Virtual Machine(JVM)
+
+Java의 4가지 구송요소 중 핵심적인 것은 Java Virtual Machine이다. JVM은 Java를 위한 것이며 물리적인 형태가 아닌 Software 로 하나의 개념으로 존재한다. 이것이 **VIRTUAL** 이 뜻하는 것이다. 그리고 JVM 독자적으로 작동할 수 있는 메커니즘과 구조를 가지고 있다. 이는 하나의 축약된 컴퓨터와 같다. 이러한 의미에서 **MACHINE**이라는 단어을 사용하게 된 것이다.
+
+'JVM이 무엇일까? ' JVM은 하나의 개념, 스펙에 지나지 않는다. JVM은 설계도를 만들어 제공하지 않는다. 단지 이렇게 저렇게 해야 한다는 식의 정이만 존재한다. 이러한 표준화된 정의를 기반으로 JVM 벤더들은 자신들의 JVM을 구현한다.
 
