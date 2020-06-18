@@ -18,7 +18,7 @@
 - Java라는 확장자를 가진 Source 파일로 Class 파일을 생성하는 시점을 가리켜 Compile Time
 - Compile을 거쳐 생성된 Class 파일을 수행하는 시점이 RunTime
 
-![image-20200606005912316](.\images\jvm)
+![](.\images\jvm.png)
 
 - JVM은 단독으로 수행되는 것이 아니라 Java Application Programming Interface 와 동적으로 연결되어 실행
 
@@ -69,7 +69,7 @@ Java API는 Runtime Library의 집합이라고 할 수 있다. 앞에서 Class �
 
 JavaAPI는 OS과 Java 프로그램을 이어주는 역할을 한다. Native Method를 통해 OS 자원과 연계되어 있고 다른 한편으로는 Java 프로그램과 맞딱드리고 있다. Interface의 역할을 하고 있는 셈이다.
 
-![](.\images\java_api)
+![](.\images\java_api.png)
 
 Java를 사용하면 파일 시스템의 특정 정보를 읽기 위해서 Platform에 대해 고민 할 필요가 없다. java.io.InputStream을 사용하기만 하면 원하는 정보를 가지고 올 수 있다.
 
