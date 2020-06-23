@@ -85,3 +85,9 @@ Java의 4가지 구송요소 중 핵심적인 것은 Java Virtual Machine이다.
 
 'JVM이 무엇일까? ' JVM은 하나의 개념, 스펙에 지나지 않는다. JVM은 설계도를 만들어 제공하지 않는다. 단지 이렇게 저렇게 해야 한다는 식의 정이만 존재한다. 이러한 표준화된 정의를 기반으로 JVM 벤더들은 자신들의 JVM을 구현한다.
 
+JVM은 정의된 Specification을 구현한 하나의 독자적인 Runtime Instance이다. 독자적인 Instance란 하나의 프로세스 형태로 구동한다는 점을 강조한 것이다.
+
+![image-20200623205839187](./images/jvm_architecture.png)
+
+JVM의 역할은 Web Application Server(WAS)등을 구별하지 않고 Java 프로그램의 범주에 들어가는 모든 것들을 실행한다. 이것이 JVM의 핵심이라고 말하는 이유이다. Java에서 프로그램을 실행하는 것은 Class 파일을 JVM으로 로딩하고 Bytecode를 해석(Interpret)하는 작업과 메모리 등의 리소스를 할당하고 관리하며 정보를 처리하는 작업들을 포괄한다. 이때 JVM은 Thread 관리 및 Garbage Collection 과 같은 메모리 재생 작업도 수행한다.
+
