@@ -168,6 +168,117 @@ ORM은 객체와 RDB 두 기둥위에 있는 기술이다.
 
 
 
+## Hello JPA - 프로젝트 생성
+
+- H2 Database
+
+  - Web에서 query 작성 가능
+
+  - 가벼움
+
+  - 실습용으로 추천
+
+  - 설정
+
+    - 처음에 JDBC URL : jdbc:h2:~/test
+      - 이후에 위 주소로 접속시 파일에 락이 걸려 여러곳에서 접속을 못하는 문제
+    - 이후 jdbc:h2:tcp://localhost/~/test 로 접속
+
+  - Version
+
+    - spring boot docs를 참고하여 버전 설정
+    - 다운로드한 H2 Database와 같은 버전 설정으로 할 것
+
+  - [접속 URL]: 127.0.0.1:8082
+    [DownLoad]: https://www.h2database.com/html/main.html
+
+
+
+### 프로젝트
+
+### 설정
+
+라이브러리 추가 - pom.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>jpa-basic</groupId>
+    <artifactId>ex1-hello-jpa</artifactId>
+    <version>1.0.0</version>
+    
+    <dependencies>
+        <!-- JPA 하이버네이트 -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>5.3.10.Final</version>
+        </dependency>
+        <!-- H2 데이터베이스 -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.199</version>
+        </dependency>
+    </dependencies>
+    
+</project>
+```
+
+JPA 설정 - persistence.xml
+
+- JPA 설정 파일
+- resources/META-INF/persistence.xml 에 위치
+- persistence-unit name으로 이름 지정
+- javax.persistence로 시작: JPA 표준 속성
+- hibernate로 시작: 하이버네이트 전용 속성
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2"
+xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+    
+    <persistence-unit name="hello">
+        <properties>
+            <!-- 필수 속성 -->
+            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
+            <property name="javax.persistence.jdbc.user" value="sa"/>
+            <property name="javax.persistence.jdbc.password" value=""/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/test"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <!-- 옵션 -->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.use_sql_comments" value="true"/>
+            <!--<property name="hibernate.hbm2ddl.auto" value="create" />-->
+        </properties>
+    </persistence-unit>
+    
+</persistence>
+```
+
+
+
+#### 데이터베이스 방언
+
+![](./images/jpa-database.png)
+
+- JPA는 특정 데이터베이스에 종속 되지 않음
+- 각각 데이터베이스 마다 SQL 문법과 함수가 조금씩 다름
+- hibernate.dialect 속성에 지정
+  - H2 : org.hibernate.dialect.H2Dialect
+  - Oracle 10g : org.hibernate.dialect.Oracle10gDialect
+  - MySQL : org.hibernate.dialect.MySQL5InnoDBDialect
+- 하이버네이트는 40가지 이상의 데이터베이스 방언 지원
+- 방언 뜻 : SQL 표준을 지키지 않는 특정 데이터베이스만의 고유한 기능
+
+
+
 ## Link
 
 - https://www.inflearn.com/course/ORM-JPA-Basic
