@@ -91,3 +91,26 @@ JVM은 정의된 Specification을 구현한 하나의 독자적인 Runtime Insta
 
 JVM의 역할은 Web Application Server(WAS)등을 구별하지 않고 Java 프로그램의 범주에 들어가는 모든 것들을 실행한다. 이것이 JVM의 핵심이라고 말하는 이유이다. Java에서 프로그램을 실행하는 것은 Class 파일을 JVM으로 로딩하고 Bytecode를 해석(Interpret)하는 작업과 메모리 등의 리소스를 할당하고 관리하며 정보를 처리하는 작업들을 포괄한다. 이때 JVM은 Thread 관리 및 Garbage Collection 과 같은 메모리 재생 작업도 수행한다.
 
+JVM은 Class Loader System을 통해 Class 파일들을 로딩하며 로딩된 Class 파일들은 Execution Engine을 통해 해석되고 해석된 프로그램은 Runtime Data Areas에 배치되어 실제 수행이 이루어 진다. 실행 과정 속에서 JVM은 필요에 따라 Thread Synchronization 과 Garbage Collection 같은 관리작업을 수행한다.
+
+
+
+## Runtime Data Areas
+
+- Process 로서 JVM이 프로그램 수행하기 위해 OS로부터 할당 받는 메모리 영역
+- JVM 에서 Class 파일은 Class Loader를 통해 로딩되면서 시작
+- 성능문제가 발생하는 영역
+  - Memory Leak
+  - Garbage collection
+
+Runtime Data Areas는 목적에따라 5개 영역이 있다.
+
+- Registers
+- Java Virtual Machine Stacks
+- Native Method Stacks
+- Method Area
+- Heap
+
+Register와 2개의 Stack 영역은 각 Thread 별로 생성이 되고 Method Area와 Heap은 모든 Thread에 공유 된다.
+
+![](./images/runtime-data-areas.png)
