@@ -114,3 +114,23 @@ Runtime Data Areas는 목적에따라 5개 영역이 있다.
 Register와 2개의 Stack 영역은 각 Thread 별로 생성이 되고 Method Area와 Heap은 모든 Thread에 공유 된다.
 
 ![](./images/runtime-data-areas.png)
+
+
+
+### PC Registers
+
+- CPU
+  - CPU에서 **인스트럭션(명령어)**를 수행
+  - 인스트럭션을 수행하는 동안 필요한 정보를 **레지스트러**라고 하는 CPU내의 기억장치 사용
+    - 수십개의 레지스트러를 가지고 있음
+  - 명령 실행에 사용되는 데이터를 **Operand**라고 함
+- JVM
+  - Java는 Resister-Base로 구동되는 방식이 아니라 Stack-Base로 작동
+    - JVM은 CPU에서 직접 인스트럭션하지 않고 Stack에서 Operand를 뽑아내어 별도의 메모리 공간에 저장한다. 이 메모리 공간을 PC Registers라고 한다.
+  - 플랫폼에서 독립적으로 실행하기 위해 위와 같은 방법을 사용
+  - 현재 작업 하는 냉용을 CPU에 Instruction 제공해야 한다. 이를 위한 버퍼공간으로서 PC Registers 라는 메모리 영역을 생성한다.
+
+PC Registesr는 각 Thread마다 하나씩 존재하며 Thread가 시작할 때 생성된다. Java Method를 수행하고 있으면 PC Registesr에는 수행중인 Java Virtual MAchine Instruction의 주소를 가진다. C언어인 경우는 undefined 상태이다. PC Registesr에 저장되는 Instruction의 주소는 Native Pointer 일 수도 있고 Method Bytecode의 시작점일 수도 있다.
+
+Native Method를 수행할 때는 JVM을 거치지 않고 바로 수행한다. Native Code는 Platform에 종속될 수 밖에 없기 때문에 JVM을 경유할 필요가 없다.
+
