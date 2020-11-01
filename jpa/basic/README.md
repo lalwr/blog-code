@@ -320,6 +320,72 @@ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org
 
 
 
+## JPA에서 가장 중요한 2가지
+
+- 객체와 관계형 데이터베이스 매핑하기(Object Relational Mapping)
+- **영속성 컨텍스트**
+
+
+
+### 엔티티 매니저 팩토리와 엔티티 매니저
+
+![](./images/jpa_manager.png)
+
+### 영속성 컨텍스트
+
+- JPA를 이해하는데 가장 중요한 용어
+-  “엔티티를 영구 저장하는 환경”이라는 뜻
+-  EntityManager.persist(entity);
+
+
+
+### 엔티티 매니저? 영속성 컨텍스트?
+
+- 영속성 컨텍스트는 논리적인 개념
+- 눈에 보이지 않는다.
+- 엔티티 매니저를 통해서 영속성 컨텍스트에 접근
+
+
+
+#### J2SE 환경
+
+엔티티 매니저와 영속성 컨텍스트가 1:1
+
+![](./images/jpa-j2se.png)
+
+#### J2EE, 스프링 프레임워크 같은 컨테이너 환경
+
+엔티티 매니저와 영속성 컨텍스트가 N:1
+
+![](./images/jpa-spring.png)
+
+
+
+### 엔티티의 생명주기
+
+- 비영속 (new/transient)
+  - 영속성 컨텍스트와 전혀 관계가 없는 새로운 상태
+    ![](./images/jpa-new.png)
+- 영속 (managed)
+  - 영속성 컨텍스트에 관리되는 상태
+    ![](./images/jpa_managed.png)
+- 준영속 (detached)
+  - 영속성 컨텍스트에 저장되었다가 분리된 상태
+  - em.detach(member);
+- 삭제 (removed)
+  - 삭제된 상태
+  - em.remove(member);
+
+![](./images/jpa-life.png)
+
+### 영속성 컨텍스트의 이점
+
+- 1차 캐시
+- 동일성(identity) 보장
+- 트랜잭션을 지원하는 쓰기 지연(transactional write-behind)
+- 변경 감지(Dirty Checking)
+- 지연 로딩(Lazy Loading)
+
 
 
 ## Link
